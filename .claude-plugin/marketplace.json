@@ -1,0 +1,13 @@
+{
+  "name": "work-notes-plugins",
+  "owner": {
+    "name": "Boris Vulikh"
+  },
+  "plugins": [
+    {
+      "name": "productivity",
+      "source": "./productivity",
+      "description": "Manage tasks, plan your day, and build up memory of important context about your work. Syncs with your calendar, email, and chat to keep everything organized and on track."
+    }
+  ]
+}
