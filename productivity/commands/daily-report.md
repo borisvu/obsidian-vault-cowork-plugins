@@ -25,6 +25,10 @@ Reads daily notes, resolves Obsidian links, cleans up tags, and produces a ready
 
 ## Instructions
 
+### 0. Get Current Date and Time
+
+> Use `~~time` MCP to get the current date, time, and day of week. This is the source of truth for all date logic. NEVER guess or calculate dates manually.
+
 ### 1. Determine Date Range
 
 **If `since` argument provided:** Use that date as start, today as end.
@@ -40,8 +44,8 @@ Daily notes live at: `Work Diary/YYYY/MM/YYYY-MM-DD.md`
 
 For each date in the range (work days only — skip Friday and Saturday):
 1. Construct the file path
-2. Read the file
-3. If file doesn't exist, note: "No daily note found for YYYY-MM-DD"
+2. **Always attempt to read the file** — never assume a file exists or doesn't exist
+3. If the read fails, note: "No daily note found for YYYY-MM-DD"
 
 ### 3. Extract Sections
 
@@ -114,9 +118,6 @@ Preserve all other tags.
 ```
 ## Daily Report — YYYY-MM-DD to YYYY-MM-DD
 
-### Summary
-[2-3 sentence high-level summary of work across all days]
-
 ### Day-by-day
 
 #### [Day of week], YYYY-MM-DD
@@ -138,11 +139,9 @@ Preserve all other tags.
 ### Carry-forward for next work day ([day name, date])
 - [items from most recent day's "To do on the next working day"]
 - [any unchecked goals from the period]
-
-### Observations
-- [patterns noticed: recurring work areas, blocked items, etc.]
-- [suggestions based on patterns]
 ```
+
+Keep it factual and flat. Do not add summaries, observations, or analysis unless the user asks.
 
 ### 7. Jira Note Creation (Side Effect)
 
@@ -157,7 +156,28 @@ During link resolution (step 4a), if a Jira ticket was queried and no vault note
 
 List tickets with proposed locations. User confirms or overrides placement.
 
-### 8. Output
+### 8. Weekly Alignment Check
+
+After composing the report, check the current week's goals:
+
+1. **Get the ISO week number** from the time MCP (step 0)
+2. **Find the weekly note** at `Work Diary/YYYY/MM/YYYY-Www.md` (e.g., `Work Diary/2026/02/2026-W07.md`)
+3. **If the file doesn't exist:** Append to the report: "No weekly note found for week Www. Consider creating one."
+4. **If the file exists but `# Week Goals` is empty or missing:** Append: "Weekly note exists but has no goals. Consider adding them."
+5. **If goals exist:** Read the `# Week Goals`, `# My Quarter Vision`, and `# My Year Vision` sections. Compare today's work items against the week goals. Append:
+
+```
+### Week goals (Www)
+- [x] Goal that was addressed today — brief note of what matched
+- [ ] Goal not yet addressed — not yet addressed
+> Consider prioritizing [unaddressed goal] on your next work day.
+```
+
+Use the quarter and year vision for context when writing the nudge — reference higher-level goals if the unaddressed item connects to them. Keep the nudge to one line.
+
+The `# Priorities` table (P0/P1/P2) can inform which unaddressed goals to nudge first.
+
+### 9. Output
 
 Present the composed report directly in chat. The user can copy/paste it wherever needed.
 

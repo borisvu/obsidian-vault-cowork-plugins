@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Cowork/Claude Code plugin repository (`boris-plugins`) containing a single plugin called `productivity`. It is a customized fork of Anthropic's `knowledge-work-plugins/productivity` plugin, adapted for an existing Obsidian vault that follows the PARA method. The plugin runs when the working directory is the root of an Obsidian vault.
 
-The original implementation spec is in `implementation-spec.md`. The validated design with deltas is in `docs/plans/2026-02-09-productivity-plugin-design.md`.
+The original implementation spec is in `implementation-spec.md`. The validated design with deltas is in `docs/plans/2026-02-09-productivity-plugin-design.md`. Daily report improvements are in `docs/plans/2026-02-09-daily-report-improvements-design.md`.
 
 ## Repository Structure
 
@@ -41,7 +41,7 @@ work-notes-plugins/
 - `.claude-plugin/plugin.json` defines the plugin manifest (name, version, description)
 - `commands/*.md` are user-invocable slash commands with YAML frontmatter (`description`, `argument-hint`)
 - `skills/*/SKILL.md` are skill definitions with YAML frontmatter (`name`, `description`) that commands reference
-- `.mcp.json` declares MCP server connections (currently only Atlassian for Jira)
+- `.mcp.json` declares MCP server connections (Atlassian for Jira, time MCP for date/time awareness)
 - `CONNECTORS.md` maps abstract tool categories (`~~issue tracker`, `~~chat`, etc.) to concrete MCP servers
 
 ### PARA Integration
@@ -119,3 +119,10 @@ Sunday through Thursday (Israel). Friday and Saturday are non-work days. This af
 - NEVER auto-add tasks or memories without user confirmation
 - Daily report is read-only on Work Diary files
 - Jira note creation always requires user confirmation
+
+### Behavioral Rules
+
+- ALWAYS use the time MCP (`~~time`) to determine today's date, time, and day of week. Never guess or calculate dates from training data.
+- ALWAYS read a file before claiming it doesn't exist. Only report a file as missing after a failed read attempt.
+- When asked to edit/enhance/improve a daily note, make minimal changes that match the user's existing style. Do not add interpretation, elaboration, or detail beyond what was asked. The daily-report command remains read-only — this rule applies only to explicit user edit requests.
+- Default to simple, factual, bulleted output. Do not add summaries, observations, or analysis unless the user asks for them.

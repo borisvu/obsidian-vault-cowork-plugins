@@ -13,3 +13,4 @@ Plugin files use `~~category` as a placeholder for whatever tool the user connec
 | Email | `~~email` | — | Microsoft 365, Gmail |
 | Calendar | `~~calendar` | — | Microsoft 365, Google Calendar |
 | Knowledge base | `~~knowledge base` | — | Notion, Confluence |
+| Time | `~~time` | time (local MCP) | — |

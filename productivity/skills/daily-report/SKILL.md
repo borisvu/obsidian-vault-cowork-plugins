@@ -57,6 +57,10 @@ tags:
 
 ## Core Logic
 
+### Time Awareness
+
+> Before any date operations, use `~~time` MCP to get the current date, time, and day of week. This is the source of truth. NEVER guess or calculate dates manually.
+
 ### Date Range Resolution
 
 - **No argument:** Last work day → today
@@ -156,9 +160,6 @@ URL: https://xtypeio.atlassian.net/browse/{KEY}
 ```
 ## Daily Report — YYYY-MM-DD to YYYY-MM-DD
 
-### Summary
-[2-3 sentence overview of work across all days]
-
 ### Day-by-day
 
 #### [Day], YYYY-MM-DD
@@ -173,16 +174,36 @@ URL: https://xtypeio.atlassian.net/browse/{KEY}
 ### Carry-forward for [Next work day name], YYYY-MM-DD
 - [from most recent "To do on the next working day"]
 - [any unchecked goals from the period]
-
-### Observations
-- [patterns: recurring themes, blocked items]
-- [suggestions for prioritization]
 ```
+
+Keep output factual and flat. No summaries or analysis unless the user asks.
+
+### Weekly Alignment (appended to all reports)
+
+After the report body, check the current week's goals:
+
+1. Get the ISO week number from `~~time` MCP
+2. Find the weekly note at `Work Diary/YYYY/MM/YYYY-Www.md`
+3. If file missing: "No weekly note found for week Www. Consider creating one."
+4. If `# Week Goals` empty/missing: "Weekly note exists but has no goals. Consider adding them."
+5. If goals exist: Compare work items against week goals. Output:
+
+```
+### Week goals (Www)
+- [x] Goal addressed today — brief match note
+- [ ] Goal not yet addressed — not yet addressed
+> Consider prioritizing [unaddressed goal] on your next work day.
+```
+
+Context sections from the weekly note:
+- `# My Year Vision` and `# My Quarter Vision` — inform the nudge, not compared item-by-item
+- `# Priorities` (P0/P1/P2) — inform which unaddressed goal to nudge first
 
 ## Important Rules
 
 - **Read-only** on Work Diary files — never modify daily/weekly notes
 - Jira note creation requires user confirmation
-- If a daily note doesn't exist for a date, mention it and continue
+- **Always read a file** before reporting it as missing — never assume
 - Empty sections (just `- ` with no content) should be omitted from the report
 - The report is output in **chat**, not written to a file
+- Keep output simple, factual, and bulleted. No summaries or analysis unless requested.
