@@ -5,9 +5,9 @@
   },
   "plugins": [
     {
-      "name": "productivity",
-      "source": "./productivity",
-      "description": "Manage tasks, plan your day, and build up memory of important context about your work. Syncs with your calendar, email, and chat to keep everything organized and on track."
+      "name": "para-flow",
+      "source": "./para-flow",
+      "description": "Second Brain productivity system for PARA-organized Obsidian vaults. Task management, two-tier workplace memory, daily reports from Work Diary, and Jira integration."
     }
   ]
 }

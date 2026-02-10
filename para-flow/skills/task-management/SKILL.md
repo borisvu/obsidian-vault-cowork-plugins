@@ -35,26 +35,30 @@ On first interaction with tasks, check if `dashboard.html` exists. If not, copy 
 ## Task Format
 
 - `- [ ] **Task title** — context, for whom, due date`
-- Jira references as plain text with URL: `**XTYPE-7292** — [Audit operation bug](https://xtypeio.atlassian.net/browse/XTYPE-7292), assigned to me`
+- Jira references as plain text with URL: `**PROJECT-7292** — [Audit operation bug](https://<company_name>.atlassian.net/browse/PROJECT-7292), assigned to me`
 - Sub-bullets for details
 - Completed: `- [x] ~~Task~~ (YYYY-MM-DD)`
 
 ## Interaction Patterns
 
 **"What's on my plate" / "my tasks":**
+
 - Read TASKS.md
 - Summarize Active and Waiting On
 - Highlight overdue or urgent items
 
 **"Add a task" / "remind me to":**
+
 - Add to Active with `- [ ] **Task**` format
 - Include context (who, due date, Jira link)
 
 **"Done with X" / "finished X":**
+
 - Change `[ ]` to `[x]`, add strikethrough and date
 - Move to Done section
 
 **"What am I waiting on":**
+
 - Read Waiting On section
 - Note how long each item has been waiting
 
@@ -62,7 +66,7 @@ On first interaction with tasks, check if `dashboard.html` exists. If not, copy 
 
 - TASKS.md is the **backlog** — the full list of commitments
 - Work Diary's "To do on the next working day" is a **daily plan** — a subset for tomorrow
-- The `/productivity:daily-report` skill reads from Work Diary, not TASKS.md
+- The `/para-flow:daily-report` skill reads from Work Diary, not TASKS.md
 - When processing daily reports, offer to update TASKS.md if completed items match
 
 ## Conventions

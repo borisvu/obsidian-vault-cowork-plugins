@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Cowork/Claude Code plugin repository (`boris-plugins`) containing a single plugin called `productivity`. It is a customized fork of Anthropic's `knowledge-work-plugins/productivity` plugin, adapted for an existing Obsidian vault that follows the PARA method. The plugin runs when the working directory is the root of an Obsidian vault.
+This is a Cowork/Claude Code plugin repository containing a single plugin called `productivity`. It is a customized fork of Anthropic's `knowledge-work-plugins/productivity` plugin, adapted for an existing Obsidian vault that follows the PARA method. The plugin runs when the working directory is the root of an Obsidian vault.
 
 The original implementation spec is in `implementation-spec.md`. The validated design with deltas is in `docs/plans/2026-02-09-productivity-plugin-design.md`. Daily report improvements are in `docs/plans/2026-02-09-daily-report-improvements-design.md`.
 
@@ -48,20 +48,20 @@ work-notes-plugins/
 
 The plugin maps its concepts to an existing Obsidian vault's PARA structure instead of creating its own `memory/` directory. Projects use **subdirectories** (matching vault convention), not flat files:
 
-| Plugin concept | Vault location |
-|---------------|----------------|
-| People profiles | `PARA/2 Areas/People/` |
-| Partner companies | `PARA/2 Areas/Partners/` |
-| Customer companies | `PARA/2 Areas/Customers/` |
-| Active projects | `PARA/1 Projects/{Name}/` (subdirectory) |
-| Assigned Jira tickets | `PARA/1 Projects/{KEY} - {Summary}/{KEY} - {Summary}.md` |
-| Non-assigned Jira tickets | `PARA/3 Resources/Jira/{KEY} - {Summary}.md` |
-| Terms / glossary | `PARA/3 Resources/Terms/{Term}.md` (individual files) |
-| Company context | `PARA/3 Resources/Company/` |
-| Archived projects | `PARA/4 Archive/{YYYY}/` |
-| Unsorted items | `PARA/0 Inbox/` (scanned during --comprehensive) |
-| Daily notes | `Work Diary/YYYY/MM/YYYY-MM-DD.md` |
-| Weekly notes | `Work Diary/gggg/MM/gggg-[W]ww.md` |
+| Plugin concept            | Vault location                                           |
+| ------------------------- | -------------------------------------------------------- |
+| People profiles           | `PARA/2 Areas/People/`                                   |
+| Partner companies         | `PARA/2 Areas/Partners/`                                 |
+| Customer companies        | `PARA/2 Areas/Customers/`                                |
+| Active projects           | `PARA/1 Projects/{Name}/` (subdirectory)                 |
+| Assigned Jira tickets     | `PARA/1 Projects/{KEY} - {Summary}/{KEY} - {Summary}.md` |
+| Non-assigned Jira tickets | `PARA/3 Resources/Jira/{KEY} - {Summary}.md`             |
+| Terms / glossary          | `PARA/3 Resources/Terms/{Term}.md` (individual files)    |
+| Company context           | `PARA/3 Resources/Company/`                              |
+| Archived projects         | `PARA/4 Archive/{YYYY}/`                                 |
+| Unsorted items            | `PARA/0 Inbox/` (scanned during --comprehensive)         |
+| Daily notes               | `Work Diary/YYYY/MM/YYYY-MM-DD.md`                       |
+| Weekly notes              | `Work Diary/gggg/MM/gggg-[W]ww.md`                       |
 
 ### Two-Tier Memory System
 
@@ -83,8 +83,8 @@ Lookup flow: CLAUDE.md -> PARA folders (search recursively) -> Jira API -> ask u
 - All created `.md` files (except CLAUDE.md and TASKS.md) **must** have YAML frontmatter with at minimum: `aliases`, `tags`, `creation_date`, `last_updated`
 - Internal cross-references use `[[wikilinks]]`, not markdown links
 - External links (Jira URLs, websites) use standard markdown links
-- Filenames use **Title Case with spaces** (e.g., `Michael Zingerman.md`), not kebab-case
-- Jira ticket files use `{KEY} - {Summary}` format (e.g., `XTYPE-6837 - Bug - Missing records in Comparison Results.md`)
+- Filenames use **Title Case with spaces** (e.g., `John Smith.md`), not kebab-case
+- Jira ticket files use `{KEY} - {Summary}` format (e.g., `PROJECT-6837 - Bug - Missing records in Results.md`)
 - Always check if a file exists before creating — never overwrite vault content
 - Person links in body text use `[[Full Name|Nickname]]` format
 - When searching for Jira tickets in vault, use glob patterns to handle both flat files and subdirectories
@@ -95,22 +95,22 @@ Sunday through Thursday (Israel). Friday and Saturday are non-work days. This af
 
 ### Jira Integration
 
-- Jira instance: `xtypeio.atlassian.net`
-- Known prefixes: `XTYPE` (dev tasks), `IDEA` (product ideas)
+- Jira instance: `<company_name>.atlassian.net`
+- Known prefixes: `PROJECT` (dev tasks), `IDEA` (product ideas)
 - Jira ticket patterns detected by `[[UPPERCASE-DIGITS]]` in Obsidian links
 - Ticket placement: assigned to user -> `PARA/1 Projects/{KEY} - {Summary}/`, otherwise -> `PARA/3 Resources/Jira/`
 - Ticket notes must include the Jira key in `aliases` frontmatter for wikilink resolution
 
 ### Tag Conventions
 
-| File type | Required tags |
-|-----------|--------------|
-| Person | `contact`, `{company-lowercase}` |
-| Customer | `customer`, `xtype`, `servicenow` |
-| Partner | `partner`, `xtype` |
+| File type   | Required tags                        |
+| ----------- | ------------------------------------ |
+| Person      | `contact`, `{company-lowercase}`     |
+| Customer    | `customer`, `company_name`.          |
+| Partner     | `partner`, `company_name`            |
 | Jira ticket | `jira`, `{project-prefix-lowercase}` |
-| Project | `project` |
-| Term | `reference`, `glossary` |
+| Project     | `project`                            |
+| Term        | `reference`, `glossary`              |
 
 ### Safety Rules
 

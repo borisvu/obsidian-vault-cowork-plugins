@@ -4,13 +4,13 @@ Personal plugin marketplace for [Cowork](https://claude.com/product/cowork) and 
 
 ## Plugins
 
-| Plugin | Description |
-|--------|-------------|
-| [productivity](./productivity/) | PARA-integrated task management, workplace memory, daily reports, and Jira integration |
+| Plugin                          | Description                                                                            |
+| ------------------------------- | -------------------------------------------------------------------------------------- |
+| [para-flow](./para-flow/) | Second Brain productivity — task management, two-tier workplace memory, daily reports, and Jira integration for PARA-organized Obsidian vaults |
 
 ## Installation
 
-    claude plugins add boris-plugins/productivity
+    Add marketplace as a GitHub repository
 
 ## Requirements
 

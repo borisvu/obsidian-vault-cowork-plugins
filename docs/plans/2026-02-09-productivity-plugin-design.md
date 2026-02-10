@@ -12,13 +12,13 @@ Implement the `productivity` plugin — a PARA-integrated fork of Anthropic's pr
 
 Based on `tree` analysis of the actual `PARA/` vault structure, these changes were agreed:
 
-| Spec says | Actual vault | Change |
-|-----------|-------------|--------|
-| Jira tickets as flat files: `1 Projects/XTYPE-1234.md` | Subdirectories: `1 Projects/XTYPE-6837 - Summary/XTYPE-6837 - Summary.md` | Match vault: `{KEY} - {Summary}/` subdir with `.md` inside |
-| Single glossary: `3 Resources/Terms/Glossary.md` | Individual term files: `3 Resources/Terms/QBR.md` | Individual `Terms/{TERM}.md` files |
-| No mention of `0 Inbox/` | Inbox exists with unsorted items | Scan Inbox during `--comprehensive` update |
-| Projects are flat | Projects have subfolders | Recursive scanning for project context |
-| `plugin.json` at productivity root | Source uses `.claude-plugin/plugin.json` | Use `.claude-plugin/plugin.json` |
+| Spec says                                                | Actual vault                                                                  | Change                                                     |
+| -------------------------------------------------------- | ----------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| Jira tickets as flat files: `1 Projects/PROJECT-1234.md` | Subdirectories: `1 Projects/PROJECT-6837 - Summary/PROJECT-6837 - Summary.md` | Match vault: `{KEY} - {Summary}/` subdir with `.md` inside |
+| Single glossary: `3 Resources/Terms/Glossary.md`         | Individual term files: `3 Resources/Terms/QBR.md`                             | Individual `Terms/{TERM}.md` files                         |
+| No mention of `0 Inbox/`                                 | Inbox exists with unsorted items                                              | Scan Inbox during `--comprehensive` update                 |
+| Projects are flat                                        | Projects have subfolders                                                      | Recursive scanning for project context                     |
+| `plugin.json` at productivity root                       | Source uses `.claude-plugin/plugin.json`                                      | Use `.claude-plugin/plugin.json`                           |
 
 ## File Manifest
 
@@ -41,6 +41,7 @@ productivity/
 ```
 
 Root:
+
 ```
 README.md
 LICENSE                          # Apache 2.0 from source

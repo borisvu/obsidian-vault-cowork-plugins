@@ -12,10 +12,10 @@ Memory makes Claude a workplace collaborator who speaks your internal language.
 Transform shorthand into understanding:
 
 ```
-User: "ask michael about the audit issue on xtype-7292"
+User: "ask john about the audit issue on project-7292"
               ↓ Claude decodes
-"Ask Michael Zingerman (CTO) about the audit operation failure
- on XTYPE-7292 (Audit operation ended without results, P1 bug)"
+"Ask John Smith (CTO) about the audit operation failure
+ on PROJECT-7292 (Audit operation ended without results, P1 bug)"
 ```
 
 ## Architecture
@@ -39,6 +39,7 @@ PARA/
 ```
 
 **CLAUDE.md (Hot Cache):**
+
 - Top ~30 people you interact with most
 - ~30 most common acronyms/terms
 - Active projects (5-15)
@@ -47,23 +48,24 @@ PARA/
 - **All entries point to PARA locations for full detail**
 
 **PARA folders (Deep Storage):**
+
 - Rich detail when needed for execution
 - Full profiles, histories, context
 - Can grow indefinitely — it's an Obsidian vault
 
 ## PARA Location Mapping
 
-| What | PARA Location | Filename convention |
-|------|---------------|---------------------|
-| Person | `PARA/2 Areas/People/{Full Name}.md` | Title case, spaces |
-| Partner company | `PARA/2 Areas/Partners/{Company Name}.md` | Title case |
-| Customer company | `PARA/2 Areas/Customers/{Company Name}.md` | Title case |
-| Active project | `PARA/1 Projects/{Project Name}/` | Subdirectory, Title case |
+| What                | PARA Location                                            | Filename convention                |
+| ------------------- | -------------------------------------------------------- | ---------------------------------- |
+| Person              | `PARA/2 Areas/People/{Full Name}.md`                     | Title case, spaces                 |
+| Partner company     | `PARA/2 Areas/Partners/{Company Name}.md`                | Title case                         |
+| Customer company    | `PARA/2 Areas/Customers/{Company Name}.md`               | Title case                         |
+| Active project      | `PARA/1 Projects/{Project Name}/`                        | Subdirectory, Title case           |
 | Jira ticket (yours) | `PARA/1 Projects/{KEY} - {Summary}/{KEY} - {Summary}.md` | Subdirectory with descriptive name |
-| Jira ticket (other) | `PARA/3 Resources/Jira/{KEY} - {Summary}.md` | Flat file with descriptive name |
-| Term / acronym | `PARA/3 Resources/Terms/{Term}.md` | One file per term |
-| Company context | `PARA/3 Resources/Company/` | By topic |
-| Archived project | `PARA/4 Archive/{YYYY}/{Project Name}/` | By year, subdirectory |
+| Jira ticket (other) | `PARA/3 Resources/Jira/{KEY} - {Summary}.md`             | Flat file with descriptive name    |
+| Term / acronym      | `PARA/3 Resources/Terms/{Term}.md`                       | One file per term                  |
+| Company context     | `PARA/3 Resources/Company/`                              | By topic                           |
+| Archived project    | `PARA/4 Archive/{YYYY}/{Project Name}/`                  | By year, subdirectory              |
 
 **IMPORTANT:** Obsidian vaults use **Title Case with spaces** for filenames, not lowercase-hyphens. Follow existing vault conventions. Check existing files before creating new ones.
 
@@ -72,23 +74,23 @@ PARA/
 ## Lookup Flow
 
 ```
-User: "ask michael about the audit issue on xtype-7292"
+User: "ask john about the audit issue on project-7292"
 
 1. Check CLAUDE.md (hot cache)
-   → michael? ✓ Michael Zingerman, CTO
-   → xtype-7292? Not in hot cache
+   → john? ✓ John Smith, CTO
+   → project-7292? Not in hot cache
 
 2. Check PARA (deep storage)
-   → Search PARA/1 Projects/*/ and PARA/3 Resources/Jira/ for XTYPE-7292
-   → Use glob: PARA/1 Projects/*/XTYPE-7292* or PARA/1 Projects/XTYPE-7292*
-   → Found: PARA/1 Projects/XTYPE-7292 - Audit operation ended without results/ ✓
+   → Search PARA/1 Projects/*/ and PARA/3 Resources/Jira/ for PROJECT-7292
+   → Use glob: PARA/1 Projects/*/PROJECT-7292* or PARA/1 Projects/PROJECT-7292*
+   → Found: PARA/1 Projects/PROJECT-7292 - Audit operation ended without results/ ✓
 
 3. If still not found → check Jira via MCP
    → Query Atlassian MCP for ticket details
    → Create vault note, add to CLAUDE.md if relevant
 
 4. If nothing → ask user
-   → "What is XTYPE-7292? I'll remember it."
+   → "What is PROJECT-7292? I'll remember it."
 ```
 
 ## Working Memory Format (CLAUDE.md)
@@ -99,30 +101,38 @@ Target ~50-80 lines. Use tables for compactness.
 # Memory
 
 ## Me
+
 [Name], [Role] on [Team]. [One sentence.]
 
 ## People
-| Who | Role |
-|-----|------|
-| **Michael** | Michael Zingerman, CTO |
+
+| Who       | Role                               |
+| --------- | ---------------------------------- |
+| **John**  | John Smith, CTO                    |
 | **Sarah** | Sarah Chen, Engineering (Platform) |
+
 > Full profiles: PARA/2 Areas/People/
 
 ## Terms
-| Term | Meaning |
-|------|---------|
-| PSR | Pipeline Status Report |
-| P0 | Drop everything priority |
+
+| Term | Meaning                  |
+| ---- | ------------------------ |
+| PSR  | Pipeline Status Report   |
+| P0   | Drop everything priority |
+
 > Full glossary: PARA/3 Resources/Terms/
 
 ## Projects
-| Name | What |
-|------|------|
-| **XTYPE-7292** | Audit operation bug, P1 |
-| **Phoenix** | DB migration, Q2 launch |
+
+| Name             | What                    |
+| ---------------- | ----------------------- |
+| **PROJECT-7292** | Audit operation bug, P1 |
+| **Phoenix**      | DB migration, Q2 launch |
+
 > Details: PARA/1 Projects/
 
 ## Preferences
+
 - Work week: Sun-Thu (Israel)
 - Async-first communication
 - PARA method for organization
@@ -180,36 +190,38 @@ Every created `.md` file (except CLAUDE.md and TASKS.md) MUST include YAML front
 ```yaml
 ---
 aliases:
-  - {short name or alternate reference}
+  - { short name or alternate reference }
 tags:
-  - {relevant tags as YAML array}
-creation_date: {YYYY-MM-DD}
-last_updated: {YYYY-MM-DD}
+  - { relevant tags as YAML array }
+creation_date: { YYYY-MM-DD }
+last_updated: { YYYY-MM-DD }
 ---
 ```
 
 **Tag conventions:**
 
-| File type | Required tags | Optional tags |
-|-----------|--------------|---------------|
-| Person | `contact`, `{company-lowercase}` | `{department}`, `{role-keyword}` |
-| Customer | `customer`, `xtype`, `servicenow` | — |
-| Partner | `partner`, `xtype` | `{specialty}` |
-| Jira ticket | `jira`, `{project-prefix-lowercase}` | `bug`, `feature` |
-| Project | `project` | `{status}`, `{team}` |
-| Term | `reference`, `glossary` | — |
+| File type   | Required tags                              | Optional tags                    |
+| ----------- | ------------------------------------------ | -------------------------------- |
+| Person      | `contact`, `{company-lowercase}`           | `{department}`, `{role-keyword}` |
+| Customer    | `customer`, `<company_name>`, `servicenow` | —                                |
+| Partner     | `partner`, `<company_name>`                | `{specialty}`                    |
+| Jira ticket | `jira`, `{project-prefix-lowercase}`       | `bug`, `feature`                 |
+| Project     | `project`                                  | `{status}`, `{team}`             |
+| Term        | `reference`, `glossary`                    | —                                |
 
 **Internal links:** Always use `[[wikilinks]]` for vault cross-references. Use `[[Full Name|Nickname]]` for people in body text.
 
-**Filenames:** Title Case with spaces (e.g., `Michael Zingerman.md`). Check if file exists before creating.
+**Filenames:** Title Case with spaces (e.g., `John Smith.md`). Check if file exists before creating.
 
 ### Promotion / Demotion
 
 **Promote to CLAUDE.md when:**
+
 - You use a term/person frequently
 - It's part of active work
 
 **Demote from CLAUDE.md when:**
+
 - Project completed → move note to `PARA/4 Archive/{year}/`
 - Person no longer frequent → remove from CLAUDE.md (keep in People/)
 - Term rarely used → remove from CLAUDE.md (keep in Terms/)

@@ -20,19 +20,12 @@ Additionally, two new capabilities are needed:
 
 ## Changes
 
-### Section 1: Infrastructure (3 files)
-
-**`productivity/.mcp.json`** — Add time MCP server:
-```json
-"time": {
-  "command": "node",
-  "args": ["/Users/borisvulikh/git/context-stack/packages/time-mcp/dist/index.js"]
-}
-```
+### Section 1: Infrastructure (2 files)
 
 **`productivity/CONNECTORS.md`** — Add `~~time` category mapped to time MCP.
 
 **`CLAUDE.md` (repo root)** — Add to Safety Rules:
+
 - Always use time MCP for date/time/day-of-week — never guess
 - Always read a file before claiming it doesn't exist
 - When asked to edit a daily note, make minimal changes matching user's style
@@ -53,6 +46,7 @@ Additionally, two new capabilities are needed:
 ### Section 3: Daily Report Skill (`skills/daily-report/SKILL.md`)
 
 Mirror all command changes:
+
 - Time MCP as date source of truth
 - Simplified multi-day format
 - Weekly alignment section with path pattern, extraction rules, output format
@@ -68,10 +62,10 @@ Mirror all command changes:
 
 ## Files Changed
 
-| File | Change |
-|------|--------|
-| `productivity/.mcp.json` | Add time MCP server |
-| `productivity/CONNECTORS.md` | Add ~~time category |
-| `CLAUDE.md` (repo root) | Add 4 behavioral rules to Safety Rules |
-| `productivity/commands/daily-report.md` | Step 0, Step 2, simplified format, weekly alignment |
-| `productivity/skills/daily-report/SKILL.md` | Mirror command changes |
+| File                                        | Change                                              |
+| ------------------------------------------- | --------------------------------------------------- |
+| `productivity/.mcp.json`                    | Add time MCP server                                 |
+| `productivity/CONNECTORS.md`                | Add ~~time category                                 |
+| `CLAUDE.md` (repo root)                     | Add 4 behavioral rules to Safety Rules              |
+| `productivity/commands/daily-report.md`     | Step 0, Step 2, simplified format, weekly alignment |
+| `productivity/skills/daily-report/SKILL.md` | Mirror command changes                              |

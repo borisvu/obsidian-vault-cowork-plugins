@@ -1,5 +1,5 @@
 ---
-description: Initialize the productivity system and open the dashboard
+description: Initialize the Second Brain system and open the dashboard
 ---
 
 # Start Command
@@ -13,6 +13,7 @@ Initialize task and memory systems within an existing PARA-based Obsidian vault,
 ### 1. Verify Vault Structure
 
 Confirm the working directory is an Obsidian vault by checking for:
+
 - `./PARA/` directory with expected subdirectories
 - `./Work Diary/` directory
 
@@ -21,6 +22,7 @@ If these don't exist, STOP and tell the user: "This doesn't look like your Work 
 ### 2. Check What Exists
 
 Check the vault root for:
+
 - `CLAUDE.md` — working memory hot cache
 - `TASKS.md` — task list
 - `dashboard.html` — visual dashboard
@@ -40,11 +42,12 @@ Tell the user: "Dashboard is ready at `dashboard.html`. Open it from your file b
 ### 5. Orient the User
 
 If everything was already initialized:
+
 ```
 Dashboard open. Your tasks and memory are loaded.
-- /productivity:update to sync tasks and check memory
-- /productivity:update --comprehensive for a deep scan
-- /productivity:daily-report for today's daily report
+- /para-flow:update to sync tasks and check memory
+- /para-flow:update --comprehensive for a deep scan
+- /para-flow:daily-report for today's daily report
 ```
 
 If memory hasn't been bootstrapped yet, continue to step 6.
@@ -63,16 +66,18 @@ Only if `CLAUDE.md` doesn't exist.
 **Then scan TASKS.md** (if it has content) for unresolved shorthand — names, acronyms, project references.
 
 **Ask the user** about anything that can't be decoded from existing vault content:
+
 ```
 I found some terms in your tasks and notes I want to confirm:
 
 1. **PSR** — What does this stand for?
-2. **Michael Z** — Is this Michael Zingerman from People/?
+2. **John Z** — Is this John Smith from People/?
 ```
 
 ### 7. Optional: Scan Jira
 
 If Atlassian MCP is available, offer:
+
 ```
 Want me to scan your Jira assigned issues to populate tasks and learn project context?
 ```
@@ -86,13 +91,13 @@ From everything gathered, create CLAUDE.md using the template in the memory-mana
 ### 9. Report
 
 ```
-Productivity system ready:
+Para Flow ready:
 - Tasks: TASKS.md (X items)
 - Memory: CLAUDE.md populated (X people, X terms, X projects)
 - Deep memory: mapped to PARA/2 Areas/, PARA/1 Projects/, PARA/3 Resources/
 - Dashboard: dashboard.html
 
-Use /productivity:daily-report for your daily standup summary.
+Use /para-flow:daily-report for your daily standup summary.
 ```
 
 ## Notes

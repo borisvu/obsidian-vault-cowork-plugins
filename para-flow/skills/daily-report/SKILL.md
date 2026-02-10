@@ -26,16 +26,21 @@ Work Diary/
 tags:
   - Daily_Report
 ---
+
 # Goals
+
 - [ ]
 
 # Worked on today
+
 -
 
 # Achievements
+
 -
 
 # To do on the next working day
+
 -
 
 # Free notes
@@ -45,15 +50,15 @@ tags:
 
 **Sunday through Thursday** (Israel).
 
-| Today | Last work day | Next work day |
-|-------|---------------|---------------|
-| Sunday | Thursday | Monday |
-| Monday | Sunday | Tuesday |
-| Tuesday | Monday | Wednesday |
-| Wednesday | Tuesday | Thursday |
-| Thursday | Wednesday | Sunday |
-| Friday | Thursday | Sunday |
-| Saturday | Thursday | Sunday |
+| Today     | Last work day | Next work day |
+| --------- | ------------- | ------------- |
+| Sunday    | Thursday      | Monday        |
+| Monday    | Sunday        | Tuesday       |
+| Tuesday   | Monday        | Wednesday     |
+| Wednesday | Tuesday       | Thursday      |
+| Thursday  | Wednesday     | Sunday        |
+| Friday    | Thursday      | Sunday        |
+| Saturday  | Thursday      | Sunday        |
 
 ## Core Logic
 
@@ -69,24 +74,24 @@ tags:
 
 ### Link Resolution Rules
 
-| Pattern | Resolution |
-|---------|-----------|
-| `[[XTYPE-1234]]` or `[[IDEA-567]]` | Jira ticket: check vault → check Jira API → use key as fallback |
-| `[[Full Name\|Display]]` | Use display text after `\|` |
-| `[[Full Name]]` | Use the full name as plain text |
-| `[[Any Other Link]]` | Check vault for file, use title if found, link text if not |
+| Pattern                              | Resolution                                                      |
+| ------------------------------------ | --------------------------------------------------------------- |
+| `[[PROJECT-1234]]` or `[[IDEA-567]]` | Jira ticket: check vault → check Jira API → use key as fallback |
+| `[[Full Name\|Display]]`             | Use display text after `\|`                                     |
+| `[[Full Name]]`                      | Use the full name as plain text                                 |
+| `[[Any Other Link]]`                 | Check vault for file, use title if found, link text if not      |
 
 ### Tag Cleaning
 
-| Tag | Action |
-|-----|--------|
-| `#planned` | Remove entirely |
-| `#unplanned` | Remove entirely |
-| All other tags | Preserve |
+| Tag            | Action          |
+| -------------- | --------------- |
+| `#planned`     | Remove entirely |
+| `#unplanned`   | Remove entirely |
+| All other tags | Preserve        |
 
 ### Jira Resolution Details
 
-For patterns matching `[[UPPERCASE-DIGITS]]` (e.g., `[[XTYPE-7292]]`, `[[IDEA-123]]`):
+For patterns matching `[[UPPERCASE-DIGITS]]` (e.g., `[[PROJECT-7292]]`, `[[IDEA-123]]`):
 
 1. Search vault using globs: `PARA/1 Projects/*/{KEY}*` and `PARA/3 Resources/Jira/{KEY}*`
 2. If found → use the note's `# title` or frontmatter
@@ -94,35 +99,36 @@ For patterns matching `[[UPPERCASE-DIGITS]]` (e.g., `[[XTYPE-7292]]`, `[[IDEA-12
 4. If Jira returns data:
    - Format: `{Jira summary} ({KEY})`
    - Offer to create vault note (user confirms placement)
-5. If Jira unavailable → just use the key: `(XTYPE-7292)`
+5. If Jira unavailable → just use the key: `(PROJECT-7292)`
 
 ### Jira Note Placement Decision
 
-| Condition | Location |
-|-----------|----------|
-| User is Jira assignee | `PARA/1 Projects/{KEY} - {Summary}/{KEY} - {Summary}.md` |
+| Condition                 | Location                                                 |
+| ------------------------- | -------------------------------------------------------- |
+| User is Jira assignee     | `PARA/1 Projects/{KEY} - {Summary}/{KEY} - {Summary}.md` |
 | User says they work on it | `PARA/1 Projects/{KEY} - {Summary}/{KEY} - {Summary}.md` |
-| Otherwise | `PARA/3 Resources/Jira/{KEY} - {Summary}.md` |
+| Otherwise                 | `PARA/3 Resources/Jira/{KEY} - {Summary}.md`             |
 
 ### Jira Note Template
 
 ```markdown
 ---
 aliases:
-  - {KEY}
+  - { KEY }
 tags:
   - jira
-  - {project-prefix-lowercase}
-creation_date: {YYYY-MM-DD}
-last_updated: {YYYY-MM-DD}
-Status: {status from Jira}
-URL: https://xtypeio.atlassian.net/browse/{KEY}
+  - { project-prefix-lowercase }
+creation_date: { YYYY-MM-DD }
+last_updated: { YYYY-MM-DD }
+Status: { status from Jira }
+URL: https://<company_name>.atlassian.net/browse/{KEY}
 ---
+
 ## Overview
 
 {Jira summary}. {One line of context if available.}
 
-**Jira:** [{KEY}](https://xtypeio.atlassian.net/browse/{KEY})
+**Jira:** [{KEY}](https://<company_name>.atlassian.net/browse/{KEY})
 **Status:** {status}
 **Assignee:** [[{assignee full name}]]
 **Project:** {Jira project name}
@@ -196,6 +202,7 @@ After the report body, check the current week's goals:
 ```
 
 Context sections from the weekly note:
+
 - `# My Year Vision` and `# My Quarter Vision` — inform the nudge, not compared item-by-item
 - `# Priorities` (P0/P1/P2) — inform which unaddressed goal to nudge first
 
