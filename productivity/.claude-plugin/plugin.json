@@ -1,6 +1,6 @@
 {
   "name": "productivity",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "PARA-integrated productivity system for Obsidian. Task management, workplace memory mapped to PARA folders, daily report generation from Work Diary, and Jira integration.",
   "author": {
     "name": "Boris"

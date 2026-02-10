@@ -1275,6 +1275,48 @@
       setTimeout(() => statusEl.classList.remove('visible'), 2000);
     }
 
+    const hasFileSystemAccess = 'showOpenFilePicker' in window;
+
+    function downloadFile(content, filename) {
+      const blob = new Blob([content], { type: 'text/markdown' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function pickFile(accept) {
+      return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        if (accept) input.accept = accept;
+        input.addEventListener('change', () => {
+          if (input.files.length > 0) resolve(input.files[0]);
+          else reject(new DOMException('', 'AbortError'));
+        });
+        input.addEventListener('cancel', () => reject(new DOMException('', 'AbortError')));
+        input.click();
+      });
+    }
+
+    function pickDirectory() {
+      return new Promise((resolve, reject) => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.webkitdirectory = true;
+        input.addEventListener('change', () => {
+          if (input.files.length > 0) resolve(input.files);
+          else reject(new DOMException('', 'AbortError'));
+        });
+        input.addEventListener('cancel', () => reject(new DOMException('', 'AbortError')));
+        input.click();
+      });
+    }
+
     // ===== MAIN TAB SWITCHING =====
     const tasksTabBtn = document.getElementById('tasksTabBtn');
     const memoryTabBtn = document.getElementById('memoryTabBtn');
@@ -1850,7 +1892,7 @@
     }
 
     async function autoSave() {
-      if (!taskFileHandle || !hasChanges || isSaving) return;
+      if (!hasFileSystemAccess || !taskFileHandle || !hasChanges || isSaving) return;
       isSaving = true;
       try {
         const writable = await taskFileHandle.createWritable();
@@ -1885,6 +1927,7 @@
     }
 
     function startWatching() {
+      if (!hasFileSystemAccess) return;
       if (watchInterval) clearInterval(watchInterval);
       watchInterval = setInterval(checkForExternalChanges, 1000);
     }
@@ -2435,20 +2478,33 @@
 
     async function openTaskFile() {
       try {
-        [taskFileHandle] = await window.showOpenFilePicker({
-          types: [{ description: 'Markdown', accept: { 'text/markdown': ['.md'] } }]
-        });
-        const file = await taskFileHandle.getFile();
-        const content = await file.text();
-        lastModified = file.lastModified;
-        const result = parseTaskMarkdown(content);
-        sections = result.sections;
-        tasks = result.tasks;
-        switchTaskView('board');
-        startWatching();
-        taskFileName = file.name;
-        filePathEl.textContent = file.name;
-        showStatus('Loaded ' + file.name);
+        if (hasFileSystemAccess) {
+          [taskFileHandle] = await window.showOpenFilePicker({
+            types: [{ description: 'Markdown', accept: { 'text/markdown': ['.md'] } }]
+          });
+          const file = await taskFileHandle.getFile();
+          const content = await file.text();
+          lastModified = file.lastModified;
+          const result = parseTaskMarkdown(content);
+          sections = result.sections;
+          tasks = result.tasks;
+          switchTaskView('board');
+          startWatching();
+          taskFileName = file.name;
+          filePathEl.textContent = file.name;
+          showStatus('Loaded ' + file.name);
+        } else {
+          const file = await pickFile('.md');
+          const content = await file.text();
+          taskFileName = file.name;
+          const result = parseTaskMarkdown(content);
+          sections = result.sections;
+          tasks = result.tasks;
+          switchTaskView('board');
+          saveBtn.textContent = 'Download';
+          filePathEl.textContent = file.name;
+          showStatus('Loaded ' + file.name);
+        }
       } catch (e) {
         if (e.name !== 'AbortError') { showStatus('Error: ' + e.message); }
       }
@@ -2458,15 +2514,22 @@
     document.getElementById('openBtnLarge')?.addEventListener('click', openTaskFile);
 
     saveBtn.addEventListener('click', async () => {
-      if (!taskFileHandle) return;
-      try {
-        const writable = await taskFileHandle.createWritable();
-        await writable.write(toMarkdown());
-        await writable.close();
+      if (hasFileSystemAccess) {
+        if (!taskFileHandle) return;
+        try {
+          const writable = await taskFileHandle.createWritable();
+          await writable.write(toMarkdown());
+          await writable.close();
+          hasChanges = false;
+          saveBtn.disabled = true;
+          showStatus('Saved');
+        } catch (e) { showStatus('Error: ' + e.message); }
+      } else {
+        downloadFile(toMarkdown(), taskFileName || 'TASKS.md');
         hasChanges = false;
         saveBtn.disabled = true;
-        showStatus('Saved');
-      } catch (e) { showStatus('Error: ' + e.message); }
+        showStatus('Downloaded ' + (taskFileName || 'TASKS.md'));
+      }
     });
 
     window.addEventListener('beforeunload', (e) => {
@@ -2570,51 +2633,88 @@
 
     async function loadMemoryDirectory() {
       try {
-        memoryDirHandle = await window.showDirectoryPicker();
+        if (hasFileSystemAccess) {
+          memoryDirHandle = await window.showDirectoryPicker();
 
-        memoryData = { claudeMd: null, memoryFiles: [], memoryDirs: {} };
+          memoryData = { claudeMd: null, memoryFiles: [], memoryDirs: {} };
 
-        try {
-          const claudeFileHandle = await memoryDirHandle.getFileHandle('CLAUDE.md');
-          const file = await claudeFileHandle.getFile();
-          memoryData.claudeMd = { content: await file.text(), fileHandle: claudeFileHandle };
-        } catch (e) { console.log('No CLAUDE.md found'); }
+          try {
+            const claudeFileHandle = await memoryDirHandle.getFileHandle('CLAUDE.md');
+            const file = await claudeFileHandle.getFile();
+            memoryData.claudeMd = { content: await file.text(), fileHandle: claudeFileHandle };
+          } catch (e) { console.log('No CLAUDE.md found'); }
 
-        try {
-          const memoryDir = await memoryDirHandle.getDirectoryHandle('memory');
-          for await (const entry of memoryDir.values()) {
-            if (entry.kind === 'file' && entry.name.endsWith('.md')) {
-              const file = await entry.getFile();
-              memoryData.memoryFiles.push({
-                name: entry.name,
-                content: await file.text(),
-                fileHandle: entry
-              });
-            } else if (entry.kind === 'directory') {
-              memoryData.memoryDirs[entry.name] = [];
-              const subDirHandle = entry;
-              for await (const subEntry of subDirHandle.values()) {
-                if (subEntry.kind === 'file' && subEntry.name.endsWith('.md')) {
-                  const file = await subEntry.getFile();
-                  const content = await file.text();
-                  memoryData.memoryDirs[entry.name].push({
-                    name: subEntry.name,
-                    content: content,
-                    fileHandle: subEntry,
-                    dirHandle: subDirHandle,
-                    parsed: parseMemoryMarkdown(content)
-                  });
+          try {
+            const memoryDir = await memoryDirHandle.getDirectoryHandle('memory');
+            for await (const entry of memoryDir.values()) {
+              if (entry.kind === 'file' && entry.name.endsWith('.md')) {
+                const file = await entry.getFile();
+                memoryData.memoryFiles.push({
+                  name: entry.name,
+                  content: await file.text(),
+                  fileHandle: entry
+                });
+              } else if (entry.kind === 'directory') {
+                memoryData.memoryDirs[entry.name] = [];
+                const subDirHandle = entry;
+                for await (const subEntry of subDirHandle.values()) {
+                  if (subEntry.kind === 'file' && subEntry.name.endsWith('.md')) {
+                    const file = await subEntry.getFile();
+                    const content = await file.text();
+                    memoryData.memoryDirs[entry.name].push({
+                      name: subEntry.name,
+                      content: content,
+                      fileHandle: subEntry,
+                      dirHandle: subDirHandle,
+                      parsed: parseMemoryMarkdown(content)
+                    });
+                  }
                 }
               }
             }
-          }
-        } catch (e) { console.log('No memory/ directory found'); }
+          } catch (e) { console.log('No memory/ directory found'); }
 
-        renderMemory();
-        memoryEmptyState.style.display = 'none';
-        memoryMainContent.style.display = 'flex';
-        filePathEl.textContent = memoryDirHandle.name;
-        showStatus('Loaded memory from ' + memoryDirHandle.name);
+          renderMemory();
+          memoryEmptyState.style.display = 'none';
+          memoryMainContent.style.display = 'flex';
+          filePathEl.textContent = memoryDirHandle.name;
+          showStatus('Loaded memory from ' + memoryDirHandle.name);
+
+        } else {
+          const files = await pickDirectory();
+
+          memoryData = { claudeMd: null, memoryFiles: [], memoryDirs: {} };
+          const rootName = files[0]?.webkitRelativePath.split('/')[0] || 'folder';
+
+          for (const file of files) {
+            if (!file.name.endsWith('.md')) continue;
+            const parts = file.webkitRelativePath.split('/');
+            const relativePath = parts.slice(1);
+            const content = await file.text();
+
+            if (relativePath.length === 1 && relativePath[0] === 'CLAUDE.md') {
+              memoryData.claudeMd = { content };
+            } else if (relativePath[0] === 'memory') {
+              if (relativePath.length === 2) {
+                memoryData.memoryFiles.push({ name: relativePath[1], content });
+              } else if (relativePath.length === 3) {
+                const subDir = relativePath[1];
+                if (!memoryData.memoryDirs[subDir]) memoryData.memoryDirs[subDir] = [];
+                memoryData.memoryDirs[subDir].push({
+                  name: relativePath[2],
+                  content,
+                  parsed: parseMemoryMarkdown(content)
+                });
+              }
+            }
+          }
+
+          renderMemory();
+          memoryEmptyState.style.display = 'none';
+          memoryMainContent.style.display = 'flex';
+          filePathEl.textContent = rootName;
+          showStatus('Loaded memory from ' + rootName);
+        }
 
       } catch (e) {
         if (e.name !== 'AbortError') { showStatus('Error: ' + e.message); }
@@ -3010,9 +3110,13 @@
       try {
         if (type === 'claudeMd') {
           memoryData.claudeMd.content = content;
-          const writable = await memoryData.claudeMd.fileHandle.createWritable();
-          await writable.write(content);
-          await writable.close();
+          if (hasFileSystemAccess && memoryData.claudeMd.fileHandle) {
+            const writable = await memoryData.claudeMd.fileHandle.createWritable();
+            await writable.write(content);
+            await writable.close();
+          } else {
+            downloadFile(content, 'CLAUDE.md');
+          }
           showStatus('Saved CLAUDE.md');
 
         } else if (type === 'memoryFile') {
@@ -3020,9 +3124,13 @@
           const file = memoryData.memoryFiles.find(f => f.name === fileName);
           if (file) {
             file.content = content;
-            const writable = await file.fileHandle.createWritable();
-            await writable.write(content);
-            await writable.close();
+            if (hasFileSystemAccess && file.fileHandle) {
+              const writable = await file.fileHandle.createWritable();
+              await writable.write(content);
+              await writable.close();
+            } else {
+              downloadFile(content, fileName);
+            }
             showStatus('Saved ' + fileName);
           }
 
@@ -3034,9 +3142,13 @@
           if (file) {
             file.content = content;
             file.parsed = parseMemoryMarkdown(content);
-            const writable = await file.fileHandle.createWritable();
-            await writable.write(content);
-            await writable.close();
+            if (hasFileSystemAccess && file.fileHandle) {
+              const writable = await file.fileHandle.createWritable();
+              await writable.write(content);
+              await writable.close();
+            } else {
+              downloadFile(content, fileName);
+            }
             showStatus('Saved ' + fileName);
           }
 
@@ -3046,21 +3158,24 @@
           if (!fileName) { showStatus('Please enter a filename'); return; }
           if (!fileName.endsWith('.md')) fileName += '.md';
 
-          const memoryDir = await memoryDirHandle.getDirectoryHandle('memory');
-          const subDir = await memoryDir.getDirectoryHandle(dirName, { create: true });
-          const fileHandle = await subDir.getFileHandle(fileName, { create: true });
-
-          const writable = await fileHandle.createWritable();
-          await writable.write(content);
-          await writable.close();
-
-          memoryData.memoryDirs[dirName].push({
-            name: fileName,
-            content: content,
-            fileHandle: fileHandle,
-            dirHandle: subDir,
-            parsed: parseMemoryMarkdown(content)
-          });
+          if (hasFileSystemAccess && memoryDirHandle) {
+            const memoryDir = await memoryDirHandle.getDirectoryHandle('memory');
+            const subDir = await memoryDir.getDirectoryHandle(dirName, { create: true });
+            const fileHandle = await subDir.getFileHandle(fileName, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(content);
+            await writable.close();
+            memoryData.memoryDirs[dirName].push({
+              name: fileName, content, fileHandle, dirHandle: subDir,
+              parsed: parseMemoryMarkdown(content)
+            });
+          } else {
+            downloadFile(content, fileName);
+            if (!memoryData.memoryDirs[dirName]) memoryData.memoryDirs[dirName] = [];
+            memoryData.memoryDirs[dirName].push({
+              name: fileName, content, parsed: parseMemoryMarkdown(content)
+            });
+          }
 
           showStatus('Created ' + fileName);
         }
