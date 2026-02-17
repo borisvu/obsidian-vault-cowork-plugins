@@ -35,12 +35,25 @@ A Second Brain productivity plugin for [Cowork](https://claude.com/product/cowor
 | `/standup since YYYY-MM-DD`     | Standup covering multiple days since given date                        |
 | `/archive`                        | Scan projects for staleness, recommend and execute archiving           |
 | `/archive --since N`              | Override staleness threshold (default: 30 days)                        |
+| `/triage`                         | Triage inbox: classify, detect conflicts, enhance, and place files     |
 
 ## Installation
 
     Add a marketplace from GitHub repo
 
 ## Changelog
+
+### 1.4.0
+
+- Added `/triage` command for content-aware inbox triage
+- New inbox-triage skill with 8 referenceable sections
+- Reads every file in PARA/0 Inbox/, classifies by content quality and type
+- Two-tier classification: DELETE (empty/temporary) and MOVE (has value)
+- Deterministic conflict detection: filename, Jira key, person name, alias match
+- Automatic frontmatter enhancement on all moved files (tags, aliases, creation_date)
+- Safe interactive workflow: always shows plan, requires confirmation
+- Post-triage CLAUDE.md sync for new people, terms, and projects
+- Simplified `/update --comprehensive` inbox scan to advisory pointing to `/triage`
 
 ### 1.3.0
 

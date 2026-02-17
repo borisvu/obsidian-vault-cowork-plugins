@@ -1,6 +1,6 @@
 {
   "name": "para-flow",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Second Brain productivity system for PARA-organized Obsidian vaults. Task management, two-tier workplace memory mapped to PARA folders, standup reports from Work Diary, and Jira integration.",
   "author": {
     "name": "Boris"

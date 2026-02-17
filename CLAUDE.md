@@ -8,6 +8,7 @@ This is a Cowork/Claude Code plugin repository containing a single plugin called
 
 The original implementation spec is in `implementation-spec.md`. The validated design with deltas is in `docs/plans/2026-02-09-productivity-plugin-design.md`. Daily report improvements are in `docs/plans/2026-02-09-daily-report-improvements-design.md`.
 The archive command design is in `docs/plans/2026-02-17-archive-command-design.md`.
+The triage command design is in `docs/plans/2026-02-17-triage-command-design.md`.
 
 ## Repository Structure
 
@@ -28,12 +29,14 @@ work-notes-plugins/
 │   │   ├── start.md                     # /para-flow:start — init system, bootstrap memory
 │   │   ├── update.md                    # /para-flow:update — sync Jira, triage tasks
 │   │   ├── standup.md                   # /para-flow:standup — generate standup/daily reports
-│   │   └── archive.md                   # /para-flow:archive — scan projects, recommend archiving
+│   │   ├── archive.md                   # /para-flow:archive — scan projects, recommend archiving
+│   │   └── triage.md                    # /para-flow:triage — triage inbox files
 │   └── skills/
 │       ├── memory-management/SKILL.md   # Two-tier memory: CLAUDE.md + PARA folders
 │       ├── task-management/SKILL.md     # TASKS.md management
 │       ├── daily-report/SKILL.md        # Daily report generation from Work Diary (10 sections)
 │       ├── project-lifecycle/SKILL.md   # Project staleness, classification, archiving (10 sections)
+│       ├── inbox-triage/SKILL.md        # Inbox classification, conflicts, enhancement (8 sections)
 │       └── dashboard.html               # Visual HTML dashboard (copied from source)
 ```
 
@@ -62,7 +65,7 @@ The plugin maps its concepts to an existing Obsidian vault's PARA structure inst
 | Terms / glossary          | `PARA/3 Resources/Terms/{Term}.md` (individual files)    |
 | Company context           | `PARA/3 Resources/Company/`                              |
 | Archived projects         | `PARA/4 Archive/{YYYY}/`                                 |
-| Unsorted items            | `PARA/0 Inbox/` (scanned during --comprehensive)         |
+| Unsorted items            | `PARA/0 Inbox/` (triaged by `/triage` command)            |
 | Daily notes               | `Work Diary/YYYY/MM/YYYY-MM-DD.md`                       |
 | Weekly notes              | `Work Diary/gggg/MM/gggg-[W]ww.md`                       |
 
@@ -73,12 +76,13 @@ The plugin maps its concepts to an existing Obsidian vault's PARA structure inst
 
 Lookup flow: CLAUDE.md -> PARA folders (search recursively) -> Jira API -> ask user.
 
-### Four Commands
+### Five Commands
 
 1. **`/para-flow:start`** — Verifies vault structure, creates CLAUDE.md/TASKS.md/dashboard.html if missing, bootstraps memory by scanning PARA content
 2. **`/para-flow:update`** — Syncs Jira issues, triages stale tasks, resolves unlinked Jira references, fills memory gaps. `--comprehensive` mode adds deep vault scanning and Inbox triage
 3. **`/para-flow:standup`** — Reads Work Diary entries, resolves Obsidian links and Jira tickets, cleans tags, outputs laconic standup report. Supports `--full` for comprehensive reports and `since YYYY-MM-DD` for date ranges
 4. **`/para-flow:archive`** — Scans PARA/1 Projects for staleness using diary mentions, Jira status, and frontmatter. Classifies as ARCHIVE/REVIEW/ACTIVE. Moves confirmed projects to `PARA/4 Archive/Archive {YYYY}/` and reconciles CLAUDE.md Projects table. Supports `--since N` for threshold override
+5. **`/para-flow:triage`** — Reads every file in `PARA/0 Inbox/`, classifies as DELETE (empty/temporary) or MOVE (has value), detects conflicts with existing vault notes by filename/Jira key/person name/alias, enhances frontmatter before placement, and executes confirmed actions. Post-triage syncs CLAUDE.md tables.
 
 ## Key Conventions
 
