@@ -17,20 +17,20 @@ work-notes-plugins/
 ├── CLAUDE.md                            # This file (Claude Code guidance)
 ├── implementation-spec.md               # Original spec
 ├── docs/plans/                          # Design documents
-├── productivity/
+├── para-flow/
 │   ├── .claude-plugin/plugin.json       # Plugin manifest
 │   ├── .mcp.json                        # MCP server config (Atlassian/Jira)
 │   ├── README.md
 │   ├── CONNECTORS.md                    # Tool category mapping (~~category placeholders)
 │   ├── CLAUDE.md                        # Template for working memory hot cache
 │   ├── commands/
-│   │   ├── start.md                     # /productivity:start — init system, bootstrap memory
-│   │   ├── update.md                    # /productivity:update — sync Jira, triage tasks
-│   │   └── daily-report.md              # /productivity:daily-report — generate standup reports
+│   │   ├── start.md                     # /para-flow:start — init system, bootstrap memory
+│   │   ├── update.md                    # /para-flow:update — sync Jira, triage tasks
+│   │   └── standup.md                   # /para-flow:standup — generate standup/daily reports
 │   └── skills/
 │       ├── memory-management/SKILL.md   # Two-tier memory: CLAUDE.md + PARA folders
 │       ├── task-management/SKILL.md     # TASKS.md management
-│       ├── daily-report/SKILL.md        # Daily report generation from Work Diary
+│       ├── daily-report/SKILL.md        # Daily report generation from Work Diary (10 sections)
 │       └── dashboard.html               # Visual HTML dashboard (copied from source)
 ```
 
@@ -72,9 +72,9 @@ Lookup flow: CLAUDE.md -> PARA folders (search recursively) -> Jira API -> ask u
 
 ### Three Commands
 
-1. **`/productivity:start`** — Verifies vault structure, creates CLAUDE.md/TASKS.md/dashboard.html if missing, bootstraps memory by scanning PARA content
-2. **`/productivity:update`** — Syncs Jira issues, triages stale tasks, resolves unlinked Jira references, fills memory gaps. `--comprehensive` mode adds deep vault scanning and Inbox triage
-3. **`/productivity:daily-report`** — Reads Work Diary entries, resolves Obsidian links and Jira tickets, cleans tags, outputs formatted standup report. Supports `since YYYY-MM-DD` for multi-day reports
+1. **`/para-flow:start`** — Verifies vault structure, creates CLAUDE.md/TASKS.md/dashboard.html if missing, bootstraps memory by scanning PARA content
+2. **`/para-flow:update`** — Syncs Jira issues, triages stale tasks, resolves unlinked Jira references, fills memory gaps. `--comprehensive` mode adds deep vault scanning and Inbox triage
+3. **`/para-flow:standup`** — Reads Work Diary entries, resolves Obsidian links and Jira tickets, cleans tags, outputs laconic standup report. Supports `--full` for comprehensive reports and `since YYYY-MM-DD` for date ranges
 
 ## Key Conventions
 
@@ -124,5 +124,5 @@ Sunday through Thursday (Israel). Friday and Saturday are non-work days. This af
 
 - ALWAYS use the time MCP (`~~time`) to determine today's date, time, and day of week. Never guess or calculate dates from training data.
 - ALWAYS read a file before claiming it doesn't exist. Only report a file as missing after a failed read attempt.
-- When asked to edit/enhance/improve a daily note, make minimal changes that match the user's existing style. Do not add interpretation, elaboration, or detail beyond what was asked. The daily-report command remains read-only — this rule applies only to explicit user edit requests.
+- When asked to edit/enhance/improve a daily note, make minimal changes that match the user's existing style. Do not add interpretation, elaboration, or detail beyond what was asked. The standup command remains read-only — this rule applies only to explicit user edit requests.
 - Default to simple, factual, bulleted output. Do not add summaries, observations, or analysis unless the user asks for them.

@@ -47,7 +47,7 @@ If everything was already initialized:
 Dashboard open. Your tasks and memory are loaded.
 - /para-flow:update to sync tasks and check memory
 - /para-flow:update --comprehensive for a deep scan
-- /para-flow:daily-report for today's daily report
+- /para-flow:standup for today's standup report
 ```
 
 If memory hasn't been bootstrapped yet, continue to step 6.
@@ -97,7 +97,7 @@ Para Flow ready:
 - Deep memory: mapped to PARA/2 Areas/, PARA/1 Projects/, PARA/3 Resources/
 - Dashboard: dashboard.html
 
-Use /para-flow:daily-report for your daily standup summary.
+Use /para-flow:standup for your daily standup summary.
 ```
 
 ## Notes

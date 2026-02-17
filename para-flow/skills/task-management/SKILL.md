@@ -66,7 +66,7 @@ On first interaction with tasks, check if `dashboard.html` exists. If not, copy 
 
 - TASKS.md is the **backlog** — the full list of commitments
 - Work Diary's "To do on the next working day" is a **daily plan** — a subset for tomorrow
-- The `/para-flow:daily-report` skill reads from Work Diary, not TASKS.md
+- The `/para-flow:standup` command reads from Work Diary, not TASKS.md
 - When processing daily reports, offer to update TASKS.md if completed items match
 
 ## Conventions

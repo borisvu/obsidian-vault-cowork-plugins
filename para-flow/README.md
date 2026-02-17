@@ -26,13 +26,40 @@ A Second Brain productivity plugin for [Cowork](https://claude.com/product/cowor
 
 ## Commands
 
-| Command                          | What it does                                                           |
-| -------------------------------- | ---------------------------------------------------------------------- |
-| `/start`                         | Initialize CLAUDE.md, TASKS.md, dashboard; bootstrap memory from vault |
-| `/update`                        | Triage stale tasks, sync Jira, check memory gaps                       |
-| `/daily-report`                  | Generate daily report from Work Diary entries                          |
-| `/daily-report since YYYY-MM-DD` | Report covering multiple days since given date                         |
+| Command                         | What it does                                                           |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| `/start`                        | Initialize CLAUDE.md, TASKS.md, dashboard; bootstrap memory from vault |
+| `/update`                       | Triage stale tasks, sync Jira, check memory gaps                       |
+| `/standup`                      | Generate laconic standup report from Work Diary entries                 |
+| `/standup --full`               | Generate comprehensive daily report with all sections                  |
+| `/standup since YYYY-MM-DD`     | Standup covering multiple days since given date                        |
 
 ## Installation
 
-    Add a martketplace from GitHub repo
+    Add a marketplace from GitHub repo
+
+## Changelog
+
+### 1.2.0
+
+- Renamed `/daily-report` command to `/standup` with laconic default format
+- Added `--full` flag to `/standup` for comprehensive daily reports
+- Added morning mode: before 10:00 AM, treats today's work as empty
+- Added standup section filtering: excludes "Free notes" and "To do on next working day" from standup output
+- Added mode-aware link formatting: brief keys in standup, full descriptions in `--full`
+- Restructured daily-report skill into 10 numbered, referenceable sections
+- Eliminated ~50% duplication between command and skill
+
+### 1.1.0
+
+- Renamed plugin from `productivity` to `para-flow`
+- Removed PII, updated for public release
+- Added Firefox support for dashboard
+
+### 1.0.1
+
+- Added Firefox support for dashboard
+
+### 1.0.0
+
+- Initial implementation: task management, two-tier memory, daily reports, Jira integration
