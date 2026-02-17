@@ -129,7 +129,7 @@ Three grouped tables, most actionable first: DELETE, then MOVE, then CONFLICTS (
 |---|------|------|--------|-------------|
 | 3 | Update Set.md | Term | Resources/Terms/ | +tags: servicenow, term |
 | 4 | XTYPE-7292 - Audit operation... | Jira | Resources/Jira/ | Already well-structured |
-| 5 | Damien Davis.md | Person | Areas/People/ | +tags: contact |
+| 5 | Damien Davis.md | Person | Areas/People/ | +tags: person |
 ```
 
 ### CONFLICT table
@@ -161,8 +161,8 @@ For conflict items, ask per-item: keep inbox (overwrites existing), keep existin
 
 ### Enhancement (applied to all MOVE items before moving)
 
-1. **Frontmatter:** Ensure valid YAML with at minimum `aliases`, `tags`, `creation_date`, `last_updated`.
-2. **Tags:** Add based on content type (`contact` for people, `jira` + project prefix for tickets, `reference`/`glossary` for terms, `project` for project material).
+1. **Frontmatter:** Ensure valid YAML with at minimum `aliases`, `tags`, `creation_date`.
+2. **Tags:** Add based on content type (`person` for people, `jira` + project prefix for tickets, `reference`/`glossary` for terms, `project` for project material).
 3. **Aliases:** Jira key for tickets, first name for people, abbreviations for terms.
 4. **creation_date:** If missing, use file modification date or extract from filename.
 5. **Filename convention:** Person notes → `Firstname Lastname.md`. Jira tickets → `{KEY} - {Summary}.md`.

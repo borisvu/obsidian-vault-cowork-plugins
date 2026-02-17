@@ -88,7 +88,7 @@ Lookup flow: CLAUDE.md -> PARA folders (search recursively) -> Jira API -> ask u
 
 ### Obsidian Markdown Rules (enforced across all skills/commands)
 
-- All created `.md` files (except CLAUDE.md and TASKS.md) **must** have YAML frontmatter with at minimum: `aliases`, `tags`, `creation_date`, `last_updated`
+- All created `.md` files (except CLAUDE.md and TASKS.md) **must** have YAML frontmatter with at minimum: `aliases`, `tags`, `creation_date`
 - Internal cross-references use `[[wikilinks]]`, not markdown links
 - External links (Jira URLs, websites) use standard markdown links
 - Filenames use **Title Case with spaces** (e.g., `John Smith.md`), not kebab-case
@@ -113,7 +113,7 @@ Sunday through Thursday (Israel). Friday and Saturday are non-work days. This af
 
 | File type   | Required tags                        |
 | ----------- | ------------------------------------ |
-| Person      | `contact`, `{company-lowercase}`     |
+| Person      | `person`, `{company-lowercase}`      |
 | Customer    | `customer`, `company_name`.          |
 | Partner     | `partner`, `company_name`            |
 | Jira ticket | `jira`, `{project-prefix-lowercase}` |
