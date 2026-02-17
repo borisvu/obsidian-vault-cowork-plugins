@@ -127,11 +127,12 @@ Three-way tag confusion: CLAUDE.md says `contact`, skill detection uses `person`
 
 Section 6 requires `last_updated` in frontmatter, but no existing vault notes use this field. Adding it creates inconsistency.
 
-### Change
+### Changes
 
 | File | Location | Before | After |
 |------|----------|--------|-------|
 | SKILL.md | Section 6 step 1 | `aliases`, `tags`, `creation_date`, `last_updated` | `aliases`, `tags`, `creation_date` |
+| CLAUDE.md | Obsidian Markdown Rules | `aliases`, `tags`, `creation_date`, `last_updated` | `aliases`, `tags`, `creation_date` |
 
 ## Fix 7: Dropped Flags — No Change Needed
 
@@ -142,7 +143,7 @@ The `--apply` and `--enhance` flags were already removed from `triage.md` during
 | File | Changes |
 |------|---------|
 | `para-flow/skills/inbox-triage/SKILL.md` | Section 4 restructured, Section 5 tag example, Section 6 restructured (merge + sandbox + tag + frontmatter) |
-| `CLAUDE.md` | Tag Conventions table: `contact` → `person` |
+| `CLAUDE.md` | Tag Conventions: `contact` → `person`; Obsidian Markdown Rules: removed `last_updated` |
 | `para-flow/commands/triage.md` | No changes needed |
 
 ## Design Decisions
