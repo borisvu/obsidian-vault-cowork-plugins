@@ -85,3 +85,130 @@ For each MOVE candidate, check for existing vault notes using deterministic sign
 If a conflict is found, annotate the MOVE item with the conflicting file's path and a note for the user to decide.
 
 No content similarity. No fuzzy matching.
+
+## Section 5: Presentation Format
+
+### Grouping
+
+Three grouped tables, most actionable first: DELETE, then MOVE, then CONFLICTS (a subset of MOVE items with vault matches).
+
+### DELETE table
+
+```
+## Delete (empty/temporary)
+
+| # | File | Reason |
+|---|------|--------|
+| 1 | SN Agent.md | Empty — only frontmatter, no content |
+| 2 | Stuck copy flow investigation.md | Single URL, no context |
+```
+
+### MOVE table
+
+```
+## Move to vault
+
+| # | File | Type | Target | Enhancement |
+|---|------|------|--------|-------------|
+| 3 | Update Set.md | Term | Resources/Terms/ | +tags: servicenow, term |
+| 4 | XTYPE-7292 - Audit operation... | Jira | Resources/Jira/ | Already well-structured |
+| 5 | Damien Davis.md | Person | Areas/People/ | +tags: contact |
+```
+
+### CONFLICT table
+
+```
+## Conflicts with existing notes
+
+| # | Inbox file | Existing note | Signal |
+|---|------------|---------------|--------|
+| 6 | Damien Davis.md | People/Damien Davis.md | Exact filename match |
+```
+
+Conflict items also appear in the MOVE table. The conflict table highlights them for user decision.
+
+### Confirmation prompt
+
+```
+Proceed with this plan?
+- Items 1-2: delete
+- Items 3-5: move + enhance
+- Item 6: conflicts with existing note — keep inbox copy, keep existing, or skip?
+
+Enter item numbers to modify, "all" to execute, or "none" to cancel:
+```
+
+For conflict items, ask per-item: keep inbox (overwrites existing), keep existing (delete inbox copy), or skip (leave in inbox).
+
+## Section 6: Execution Rules
+
+### Enhancement (applied to all MOVE items before moving)
+
+1. **Frontmatter:** Ensure valid YAML with at minimum `aliases`, `tags`, `creation_date`, `last_updated`.
+2. **Tags:** Add based on content type (`contact` for people, `jira` + project prefix for tickets, `reference`/`glossary` for terms, `project` for project material).
+3. **Aliases:** Jira key for tickets, first name for people, abbreviations for terms.
+4. **creation_date:** If missing, use file modification date or extract from filename.
+5. **Filename convention:** Person notes → `Firstname Lastname.md`. Jira tickets → `{KEY} - {Summary}.md`.
+
+### DELETE execution
+
+- Remove file from inbox.
+- Log: `Deleted: {filename} ({reason})`
+
+### MOVE execution
+
+- Enhance the file in-place.
+- Move to target path.
+- Log: `Moved: {filename} → {target path}`
+
+### CONFLICT execution
+
+- **Keep inbox:** Enhance inbox copy, overwrite existing note, delete inbox copy.
+- **Keep existing:** Delete inbox copy.
+- **Skip:** Leave in inbox, no action.
+
+### Error handling
+
+- If target directory doesn't exist within PARA/1, 2, or 3 — create it.
+- Never create new top-level PARA folders.
+- If a move fails, skip the item and report the error — don't abort the batch.
+
+## Section 7: Post-Triage Updates
+
+### CLAUDE.md sync
+
+If any new people, terms, or projects were placed:
+
+- New person → offer to add to CLAUDE.md People table.
+- New term → offer to add to CLAUDE.md Terms table.
+- New project material → check if Projects table needs updating.
+
+Present diff and confirm before writing. Uses existing memory-management skill.
+
+### Summary output
+
+```
+Inbox triage complete:
+  Deleted: N files (empty/temporary)
+  Moved: N files (breakdown by destination)
+  Conflicts: N resolved (breakdown by resolution)
+  CLAUDE.md: changes applied / no changes needed
+  Inbox: N files remaining
+```
+
+## Section 8: Important Rules
+
+### Safety
+
+1. **No file deletes or moves without explicit user confirmation** — always show the plan first and wait for approval.
+2. **Never modify Work Diary files** — they are read-only.
+3. **Never create top-level PARA directories** — only create sub-directories within existing PARA/1, 2, or 3.
+4. **For conflict items, show both files before user decides** — display content of inbox file and existing note side by side.
+5. **Log all actions in summary output** — every delete, move, and conflict resolution must be recorded.
+
+### Behavioral
+
+6. **Always use `~~time` MCP** for the current date — never guess or calculate.
+7. **Always read a file before claiming it doesn't exist** — only report missing after a failed read.
+8. **Non-markdown files are listed but never classified or moved** — report them for manual sorting.
+9. **Nested inbox folders are treated as single items** — classify by the main .md file inside, move the entire folder as a unit.
