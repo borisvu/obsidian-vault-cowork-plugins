@@ -155,3 +155,181 @@ Umbrella projects (has_sub_projects = true) are never classified on their own. O
 ### No-data projects
 
 Projects with no Jira key, no diary mentions, and no frontmatter status → classify as REVIEW with note: "No activity data available — check manually."
+
+## Section 6: Archive Placement
+
+### Target path rules
+
+| Scenario | Target Path |
+|----------|-------------|
+| Standalone project (top-level folder in PARA/1 Projects/) | `PARA/4 Archive/Archive {YYYY}/{folder_name}/` |
+| Sub-project of parent that stays active | `PARA/4 Archive/Archive {YYYY}/{parent_name}/{sub_folder_name}/` |
+| All sub-projects done → entire umbrella | `PARA/4 Archive/Archive {YYYY}/{parent_name}/` (move whole folder) |
+| User picks Resources for a REVIEW item | `PARA/3 Resources/{folder_name}/` |
+
+### Year determination
+
+Always use the current year (when archiving happens), not the project creation year. Use `~~time` MCP for the current date.
+
+### Folder creation
+
+Create `PARA/4 Archive/Archive {YYYY}/` if it does not exist. Create parent sub-folders (e.g., `Archive 2026/Data Management/`) if needed for sub-project archiving. These are the **only** directories the command is allowed to create. Never create PARA/1, PARA/2, or PARA/3 directories.
+
+### Conflict handling
+
+If the target path already exists in the archive (e.g., a project was partially archived before):
+- Ask user: "**{folder_name}** already exists in Archive {YYYY}/. Merge contents into existing folder, or rename to {folder_name} (2)?"
+- Wait for user response before proceeding
+
+### Umbrella with non-project files
+
+If an umbrella project folder contains files that are not sub-project folders (e.g., meeting notes, README.md), warn the user: "Data Management/ contains files outside sub-projects: meetings.md, README.md. Include these in the archive, or leave them behind?"
+
+## Section 7: Presentation Format
+
+### Grouping
+
+Present projects grouped by classification. Show ARCHIVE first (most actionable), then REVIEW, then ACTIVE (informational).
+
+### ARCHIVE table
+
+```
+## Ready to Archive
+
+| #  | Project                          | Reason                          | Target                                    |
+|----|----------------------------------|---------------------------------|-------------------------------------------|
+| 1  | PROJECT-7371 - Sync fails        | Jira: Merged                    | Archive 2026/PROJECT-7371 - Sync fails/   |
+| 2  | PROJECT-7457 - Stuck definitions | Jira: Done, no diary 45d        | Archive 2026/PROJECT-7457 - Stuck defs/   |
+| 3  | Data Management/Data copy        | Jira: Done, last diary Jan 5    | Archive 2026/Data Management/Data copy/   |
+```
+
+### REVIEW table
+
+```
+## Needs Review
+
+| #  | Project                          | Reason                          | Suggestion                                |
+|----|----------------------------------|---------------------------------|-------------------------------------------|
+| 4  | PROJECT-6860 - No query results  | No diary mention 65d            | Archive or re-activate?                   |
+| 5  | Snow Ingestion Pipeline          | Reference docs only, no tasks   | Move to Resources?                        |
+```
+
+### ACTIVE table (compact)
+
+```
+## Active (no action)
+
+| Project              | Last Activity                    |
+|----------------------|----------------------------------|
+| Data Management      | Today (umbrella, 2 active subs)  |
+| PROJECT-7406         | Feb 10 (Jira: In Progress)       |
+| PROJECT-7451         | Today (in weekly goals)          |
+```
+
+### Confirmation prompt
+
+After the tables, ask the user to confirm:
+
+```
+Archive items 1-3? Review items 4-5?
+Enter item numbers to proceed (e.g., "1,2,3,4"), "all", or "none":
+```
+
+For REVIEW items the user confirms, ask per-item: archive, move to Resources, or skip.
+
+## Section 8: Post-Move Updates
+
+### CLAUDE.md Projects table
+
+After all confirmed moves complete:
+1. Read the current CLAUDE.md Projects table
+2. Remove rows for archived projects
+3. Do not add archive notes to the table — keep it clean for active projects only
+4. Write the updated table (CLAUDE.md is an exception to the "no modification without confirmation" rule for this operation, since the user already confirmed the archive)
+
+### TASKS.md
+
+1. Read TASKS.md
+2. Find tasks referencing archived project names or Jira keys
+3. Present each to the user: "These tasks reference archived projects:"
+   - Mark as done?
+   - Remove from list?
+   - Keep as-is?
+4. Never auto-remove tasks — always ask
+
+### Move log
+
+Print a summary after all operations:
+
+```
+Archived 3 projects:
+  PROJECT-7371 - Sync fails       → Archive 2026/PROJECT-7371 - Sync fails/
+  PROJECT-7457 - Stuck definitions → Archive 2026/PROJECT-7457 - Stuck definitions/
+  Data Management/Data copy        → Archive 2026/Data Management/Data copy/
+
+CLAUDE.md: removed 2 entries
+TASKS.md: 1 task flagged for review
+```
+
+## Section 9: Project Table Sync
+
+### Purpose
+
+Reconcile the CLAUDE.md Projects table against the current state of PARA/1 Projects/. Runs after archive moves are complete, but can also be referenced independently.
+
+### Step 1: Scan current state
+
+List all folders in `PARA/1 Projects/` (post-archiving). For each, extract: folder name, Jira key (if present), whether it is a sub-project or umbrella.
+
+### Step 2: Compare against CLAUDE.md
+
+| Situation | Action |
+|-----------|--------|
+| Folder exists in PARA/1 but not in Projects table | Add row: **Name** from folder name (bold), **What** from frontmatter description or Jira summary |
+| Row exists in table but folder is gone from PARA/1 | Remove row (it was archived or manually deleted) |
+| Both exist | Update What column with current Jira status if available (e.g., append "In Progress" or "In Review") |
+
+### Step 3: Present diff
+
+```
+## CLAUDE.md Projects Table Update
+
+Added:
+  + PROJECT-7502 — New reporting endpoint
+
+Removed:
+  - PROJECT-7371 — Sync fails (archived)
+  - PROJECT-7457 — Stuck definitions (archived)
+
+Updated:
+  ~ PROJECT-7406 — added "In Review"
+
+Apply these changes?
+```
+
+Wait for user confirmation before writing to CLAUDE.md.
+
+### Constraints
+
+- Table stays at ~5-15 entries (hot cache principle)
+- If PARA/1 has more than 15 active projects, include only those with recent diary mentions or active Jira status. Note overflow: "> +N more in PARA/1 Projects/"
+- Umbrella projects get one row for the parent, not individual rows per sub-project
+- If a project's description cannot be determined (no frontmatter, no Jira), use "TODO: describe" as the What column value
+
+## Section 10: Important Rules
+
+### Safety
+
+1. **No file moves without explicit user confirmation** — always show the plan first and wait for approval
+2. **Never delete files** — archive means move, not delete
+3. **Never modify Work Diary files** — they are read-only
+4. **Never create PARA/1, 2, or 3 directories** — only create Archive year folders and sub-folders within them
+5. **Never auto-remove tasks** — always present TASKS.md changes for user approval
+6. **Log all moves** — print a summary after execution
+
+### Behavioral
+
+7. **Always use `~~time` MCP** for the current date — never guess or calculate
+8. **Always read a file before claiming it doesn't exist** — only report missing after a failed read
+9. **Check for conflicts** before moving — if target exists in archive, ask user
+10. **Respect umbrella structure** — never archive an umbrella with active sub-projects
