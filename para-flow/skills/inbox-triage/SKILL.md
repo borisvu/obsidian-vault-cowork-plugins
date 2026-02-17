@@ -71,20 +71,37 @@ Everything not DELETE. Sub-classify by content type using the table in Section 1
 
 ### Purpose
 
-For each MOVE candidate, check for existing vault notes using deterministic signals only.
+For each MOVE candidate, check for existing vault notes. Uses a two-phase index-first approach — build a complete file index once, then match all candidates against it.
 
-### Conflict Strategies
+### Phase 1: Build File Index
 
-| Strategy | Search | Match means |
-|----------|--------|-------------|
-| Exact filename | `PARA/**/{filename}` excluding Inbox and Archive | Strong conflict |
-| Jira key | `PARA/**/{KEY}*` in Projects and Resources/Jira | Strong conflict |
-| Person name | `PARA/2 Areas/People/{name}*` | Strong conflict |
-| Alias match | Search vault for files with matching frontmatter aliases | Moderate conflict |
+Before checking individual files, build a searchable index of all existing vault notes:
+
+| Step | Mechanism | Purpose |
+|------|-----------|---------|
+| 1a | Read CLAUDE.md People, Terms, and Projects tables | Instant conflict detection for known entities — no filesystem I/O |
+| 1b | Run `find PARA/1\ Projects PARA/2\ Areas PARA/3\ Resources -name "*.md" -type f` | Build complete file index of PARA/1-3 in a single filesystem traversal |
+
+Store the combined results as the **vault file index** for Phase 2.
+
+**Fallback:** If `find` fails or returns empty for a directory that should have content, flag it: "Could not index {directory}. Conflict detection incomplete for this location." Continue with partial results.
+
+### Phase 2: Match Against Index
+
+For each MOVE candidate, check the vault file index using deterministic signals:
+
+| Strategy | Match against | Match means |
+|----------|---------------|-------------|
+| Exact filename | Index paths containing `{filename}` (excluding Inbox and Archive) | Strong conflict |
+| Jira key | Index paths matching `{KEY}*` pattern | Strong conflict |
+| Person name | Index paths under `Areas/People/` matching `{name}*` | Strong conflict |
+| Alias match | Read frontmatter of candidate files identified in index | Moderate conflict |
+
+Each layer narrows the set. Alias matching (requires reading files) only runs on items not already caught by filename, Jira key, or person name matching.
 
 If a conflict is found, annotate the MOVE item with the conflicting file's path and a note for the user to decide.
 
-No content similarity. No fuzzy matching.
+No content similarity. No fuzzy matching. Deterministic signals only.
 
 ## Section 5: Presentation Format
 
