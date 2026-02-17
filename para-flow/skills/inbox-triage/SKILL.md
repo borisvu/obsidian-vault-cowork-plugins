@@ -150,12 +150,12 @@ Conflict items also appear in the MOVE table. The conflict table highlights them
 Proceed with this plan?
 - Items 1-2: delete
 - Items 3-5: move + enhance
-- Item 6: conflicts with existing note — keep inbox copy, keep existing, or skip?
+- Item 6: conflicts with existing note — keep inbox, keep existing, merge, or skip?
 
 Enter item numbers to modify, "all" to execute, or "none" to cancel:
 ```
 
-For conflict items, ask per-item: keep inbox (overwrites existing), keep existing (delete inbox copy), or skip (leave in inbox).
+For conflict items, ask per-item: keep inbox (overwrites existing), keep existing (delete inbox copy), merge (append unique inbox content to existing), or skip (leave in inbox).
 
 ## Section 6: Execution Rules
 
@@ -182,7 +182,17 @@ For conflict items, ask per-item: keep inbox (overwrites existing), keep existin
 
 - **Keep inbox:** Enhance inbox copy, overwrite existing note, delete inbox copy.
 - **Keep existing:** Delete inbox copy.
+- **Merge:** Combine unique content from both files into the existing note, then delete inbox copy. See merge rules below.
 - **Skip:** Leave in inbox, no action.
+
+### Merge rules
+
+1. Read both files fully.
+2. Identify sections/content blocks in the inbox copy not present in the existing note. Use headings, bullet groups, or paragraph breaks as section boundaries.
+3. Append unique content under a `## Merged from Inbox` heading in the existing note. If the structure is obvious (e.g., adding a phone number to a contact section), integrate inline instead.
+4. Preserve the existing note's frontmatter as authority. Only add new aliases or tags from the inbox copy that the existing note lacks.
+5. Delete the inbox copy after successful merge.
+6. Log: `Merged: {filename} — {N} sections added to {existing path}`
 
 ### Error handling
 
