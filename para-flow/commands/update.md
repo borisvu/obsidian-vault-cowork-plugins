@@ -130,21 +130,15 @@ Scan recent daily notes in `Work Diary/` for:
 - Referenced projects not tracked
 - Obsidian links to non-existent files
 
-### Extra: Scan Inbox
+### Extra: Inbox Advisory
 
-Check `PARA/0 Inbox/` for items that could be sorted:
-
-- Jira tickets that should move to Projects or Resources
-- People notes that should move to People/
-- Anything that's been in Inbox for 7+ days
+Count files in `PARA/0 Inbox/`. If any files are found, append to the update report:
 
 ```
-## Inbox items to sort
-| Item | Suggestion |
-|------|-----------|
-| PROJECT-7292 - Audit operation... | → Move to PARA/1 Projects/ (assigned to you) |
-| Jane Doe.md | → Move to PARA/2 Areas/People/ |
+N file(s) in Inbox. Run /para-flow:triage for full analysis.
 ```
+
+No classification or move suggestions — advisory only.
 
 ### Extra: Suggest New Memories
 
