@@ -198,7 +198,19 @@ For conflict items, ask per-item: keep inbox (overwrites existing), keep existin
 
 - If target directory doesn't exist within PARA/1, 2, or 3 — create it.
 - Never create new top-level PARA folders.
-- If a move fails, skip the item and report the error — don't abort the batch.
+- If a move or delete fails, do not silently skip. Follow the sandbox fallback below.
+
+### Sandbox fallback
+
+If a file delete or move fails (e.g., "Operation not permitted" in sandboxed environments):
+
+1. Check if Desktop Commander MCP is available.
+2. If yes, check CLAUDE.md Preferences for a stored `vault_host_path`.
+   - If found, retry the operation using the host filesystem path via Desktop Commander.
+   - If not found, ask the user for the vault's host filesystem path. Store it in CLAUDE.md Preferences for future use, then retry.
+3. If Desktop Commander is not available, ask the user for an alternative method to complete the operation.
+4. Never silently skip a failed operation — always report the failure and the fallback attempted.
+5. If all fallbacks fail for an item, skip it, report the error, and continue the batch.
 
 ## Section 7: Post-Triage Updates
 
