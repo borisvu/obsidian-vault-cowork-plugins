@@ -103,6 +103,21 @@ Update complete:
 - All tasks decoded ✓
 ```
 
+### 8. Project Health Advisory
+
+Lightweight check — no Jira calls or diary scanning.
+
+1. List folders in `PARA/1 Projects/`
+2. For each, read the main `.md` file and check the frontmatter `Status` field
+3. Count folders where Status matches: Done, Closed, Merged, Resolved, Cancelled (case-insensitive)
+4. If count > 0, append to the report output:
+
+```
+N project(s) in PARA/1 Projects/ appear completed. Run /para-flow:archive for full analysis.
+```
+
+5. If count is 0, do not add any output — the advisory is silent when all projects look active
+
 ## Comprehensive Mode (`--comprehensive`)
 
 Everything in Default Mode, plus:
