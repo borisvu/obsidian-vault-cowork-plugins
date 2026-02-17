@@ -33,12 +33,26 @@ A Second Brain productivity plugin for [Cowork](https://claude.com/product/cowor
 | `/standup`                      | Generate laconic standup report from Work Diary entries                 |
 | `/standup --full`               | Generate comprehensive daily report with all sections                  |
 | `/standup since YYYY-MM-DD`     | Standup covering multiple days since given date                        |
+| `/archive`                        | Scan projects for staleness, recommend and execute archiving           |
+| `/archive --since N`              | Override staleness threshold (default: 30 days)                        |
 
 ## Installation
 
     Add a marketplace from GitHub repo
 
 ## Changelog
+
+### 1.3.0
+
+- Added `/archive` command for project lifecycle management
+- New project-lifecycle skill with 10 referenceable sections
+- Scans PARA/1 Projects/ for stale projects using diary mentions, Jira status, and frontmatter
+- Three-tier classification: ARCHIVE, REVIEW, ACTIVE
+- Safe interactive workflow: always shows plan, requires confirmation before moving files
+- Moves projects to `PARA/4 Archive/Archive {YYYY}/` following established conventions
+- Supports umbrella projects with sub-project archiving
+- Reconciles CLAUDE.md Projects table after archiving
+- Added project health advisory to `/update` command report
 
 ### 1.2.0
 

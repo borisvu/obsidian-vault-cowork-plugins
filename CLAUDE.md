@@ -7,6 +7,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a Cowork/Claude Code plugin repository containing a single plugin called `productivity`. It is a customized fork of Anthropic's `knowledge-work-plugins/productivity` plugin, adapted for an existing Obsidian vault that follows the PARA method. The plugin runs when the working directory is the root of an Obsidian vault.
 
 The original implementation spec is in `implementation-spec.md`. The validated design with deltas is in `docs/plans/2026-02-09-productivity-plugin-design.md`. Daily report improvements are in `docs/plans/2026-02-09-daily-report-improvements-design.md`.
+The archive command design is in `docs/plans/2026-02-17-archive-command-design.md`.
 
 ## Repository Structure
 
@@ -26,11 +27,13 @@ work-notes-plugins/
 │   ├── commands/
 │   │   ├── start.md                     # /para-flow:start — init system, bootstrap memory
 │   │   ├── update.md                    # /para-flow:update — sync Jira, triage tasks
-│   │   └── standup.md                   # /para-flow:standup — generate standup/daily reports
+│   │   ├── standup.md                   # /para-flow:standup — generate standup/daily reports
+│   │   └── archive.md                   # /para-flow:archive — scan projects, recommend archiving
 │   └── skills/
 │       ├── memory-management/SKILL.md   # Two-tier memory: CLAUDE.md + PARA folders
 │       ├── task-management/SKILL.md     # TASKS.md management
 │       ├── daily-report/SKILL.md        # Daily report generation from Work Diary (10 sections)
+│       ├── project-lifecycle/SKILL.md   # Project staleness, classification, archiving (10 sections)
 │       └── dashboard.html               # Visual HTML dashboard (copied from source)
 ```
 
@@ -70,11 +73,12 @@ The plugin maps its concepts to an existing Obsidian vault's PARA structure inst
 
 Lookup flow: CLAUDE.md -> PARA folders (search recursively) -> Jira API -> ask user.
 
-### Three Commands
+### Four Commands
 
 1. **`/para-flow:start`** — Verifies vault structure, creates CLAUDE.md/TASKS.md/dashboard.html if missing, bootstraps memory by scanning PARA content
 2. **`/para-flow:update`** — Syncs Jira issues, triages stale tasks, resolves unlinked Jira references, fills memory gaps. `--comprehensive` mode adds deep vault scanning and Inbox triage
 3. **`/para-flow:standup`** — Reads Work Diary entries, resolves Obsidian links and Jira tickets, cleans tags, outputs laconic standup report. Supports `--full` for comprehensive reports and `since YYYY-MM-DD` for date ranges
+4. **`/para-flow:archive`** — Scans PARA/1 Projects for staleness using diary mentions, Jira status, and frontmatter. Classifies as ARCHIVE/REVIEW/ACTIVE. Moves confirmed projects to `PARA/4 Archive/Archive {YYYY}/` and reconciles CLAUDE.md Projects table. Supports `--since N` for threshold override
 
 ## Key Conventions
 
