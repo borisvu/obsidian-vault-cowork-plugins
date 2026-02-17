@@ -43,6 +43,14 @@ A Second Brain productivity plugin for [Cowork](https://claude.com/product/cowor
 
 ## Changelog
 
+### 1.4.1
+
+- Fixed conflict detection: replaced per-file glob with index-first approach (CLAUDE.md tables + `find` command)
+- Added merge conflict resolution: fourth option alongside keep-inbox, keep-existing, skip
+- Added sandbox fallback: Desktop Commander MCP with stored host path when file operations fail
+- Aligned person tag convention to `person` across skill and CLAUDE.md
+- Removed `last_updated` from required frontmatter (no vault notes use it)
+
 ### 1.4.0
 
 - Added `/triage` command for content-aware inbox triage
