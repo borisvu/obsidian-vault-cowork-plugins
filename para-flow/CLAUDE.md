@@ -27,7 +27,6 @@
 
 ## Preferences
 
-- Work week: Sun-Thu
 - PARA method for organization
 - Obsidian for knowledge management
 - Jira instance: <company_name>.atlassian.net
