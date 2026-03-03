@@ -11,14 +11,14 @@ Detect stale projects, classify them for archiving, execute moves to PARA/4 Arch
 
 ### Definitions
 
-| Term | Meaning |
-|------|---------|
-| **Project** | A folder in PARA/1 Projects/ representing active work (may contain sub-folders and notes) |
+| Term                 | Meaning                                                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- |
+| **Project**          | A folder in PARA/1 Projects/ representing active work (may contain sub-folders and notes)                     |
 | **Umbrella project** | A project folder that contains sub-project folders (e.g., Data Management contains Data copy, Related Tables) |
-| **Sub-project** | A folder nested inside an umbrella project |
-| **Staleness** | A project with no recent diary mentions, no recent Jira activity, and/or a terminal Jira status |
-| **Archive** | Moving a project folder to `PARA/4 Archive/Archive {YYYY}/` — the project is preserved but no longer active |
-| **Resources** | Moving a project folder to `PARA/3 Resources/` — the content is reference material, not project work |
+| **Sub-project**      | A folder nested inside an umbrella project                                                                    |
+| **Staleness**        | A project with no recent diary mentions, no recent Jira activity, and/or a terminal Jira status               |
+| **Archive**          | Moving a project folder to `PARA/4 Archive/Archive {YYYY}/` — the project is preserved but no longer active   |
+| **Resources**        | Moving a project folder to `PARA/3 Resources/` — the content is reference material, not project work          |
 
 ### Archive Location
 
@@ -44,16 +44,16 @@ Sunday through Thursday (Israel). Friday and Saturday are non-work days. Use `~~
 
 List all top-level folders in `PARA/1 Projects/`. For each folder, build a registry entry:
 
-| Field | How to determine |
-|-------|-----------------|
-| `folder_name` | Directory name as-is |
-| `jira_key` | Extract from folder name if it matches `UPPERCASE-DIGITS` pattern (e.g., PROJECT-7371 from "PROJECT-7371 - Sync fails") |
-| `is_sub_project` | True if this folder is nested inside another project folder |
-| `parent_project` | Parent folder name, if `is_sub_project` is true |
-| `has_sub_projects` | True if this folder contains sub-folders that are themselves projects |
-| `frontmatter_status` | Read the main `.md` file inside the folder, extract `Status` from YAML frontmatter |
-| `creation_date` | From frontmatter `creation_date` field |
-| `last_updated` | From frontmatter `last_updated` field |
+| Field                | How to determine                                                                                                        |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `folder_name`        | Directory name as-is                                                                                                    |
+| `jira_key`           | Extract from folder name if it matches `UPPERCASE-DIGITS` pattern (e.g., PROJECT-7371 from "PROJECT-7371 - Sync fails") |
+| `is_sub_project`     | True if this folder is nested inside another project folder                                                             |
+| `parent_project`     | Parent folder name, if `is_sub_project` is true                                                                         |
+| `has_sub_projects`   | True if this folder contains sub-folders that are themselves projects                                                   |
+| `frontmatter_status` | Read the main `.md` file inside the folder, extract `Status` from YAML frontmatter                                      |
+| `creation_date`      | From frontmatter `creation_date` field                                                                                  |
+| `last_updated`       | From frontmatter `last_updated` field                                                                                   |
 
 ### Finding the main .md file
 
@@ -94,16 +94,17 @@ For projects with a Jira key, fetch current ticket state from Atlassian MCP.
 
 ### Fields to retrieve
 
-| Jira Field | Usage |
-|-----------|-------|
-| `status` | Primary signal: Done/Closed/Merged → archive candidate |
-| `resolution` | Confirms completion: Fixed, Done, Won't Do, Duplicate |
-| `updated` | Last Jira activity date → staleness input |
-| `assignee` | Context for understanding project ownership |
+| Jira Field   | Usage                                                  |
+| ------------ | ------------------------------------------------------ |
+| `status`     | Primary signal: Done/Closed/Merged → archive candidate |
+| `resolution` | Confirms completion: Fixed, Done, Won't Do, Duplicate  |
+| `updated`    | Last Jira activity date → staleness input              |
+| `assignee`   | Context for understanding project ownership            |
 
 ### MCP unavailable fallback
 
 If the Atlassian MCP is not connected:
+
 - Skip this stage entirely
 - Log: "Jira enrichment skipped — Atlassian MCP not connected. Classification based on diary mentions and frontmatter only."
 - Classification proceeds with Section 5 using available data only
@@ -118,6 +119,7 @@ Each project is assigned exactly one classification. Evaluate in order: ARCHIVE 
 ### ARCHIVE — recommend move
 
 A project is classified ARCHIVE if **any** of these are true:
+
 - Jira status is Done, Closed, Merged, or Resolved
 - Jira resolution is Fixed, Done, Won't Do, or Duplicate
 - Frontmatter `Status` field is one of: Merged, Done, Closed, Resolved, Cancelled
@@ -127,6 +129,7 @@ A project is classified ARCHIVE if **any** of these are true:
 ### REVIEW — flag for user
 
 A project is classified REVIEW if **any** of these are true (and none of the ARCHIVE criteria matched):
+
 - No diary mention in 30–59 days
 - Jira status is Backlog with no Jira activity in 30+ days
 - Frontmatter `Status` is Backlog with no diary references
@@ -135,6 +138,7 @@ A project is classified REVIEW if **any** of these are true (and none of the ARC
 ### ACTIVE — no action
 
 Default when neither ARCHIVE nor REVIEW criteria matched. Positive signals (not required):
+
 - Diary mention within last 30 days
 - Jira status is In Progress, In Review, Open, or To Do
 - Listed in current week's goals (weekly note)
@@ -142,6 +146,7 @@ Default when neither ARCHIVE nor REVIEW criteria matched. Positive signals (not 
 ### `--since N` override
 
 The `--since N` flag replaces the 30-day base threshold:
+
 - REVIEW window: N days to (2N - 1) days
 - ARCHIVE window: 2N+ days
 - Example: `--since 90` → REVIEW at 90–179 days, ARCHIVE at 180+ days
@@ -160,12 +165,12 @@ Projects with no Jira key, no diary mentions, and no frontmatter status → clas
 
 ### Target path rules
 
-| Scenario | Target Path |
-|----------|-------------|
-| Standalone project (top-level folder in PARA/1 Projects/) | `PARA/4 Archive/Archive {YYYY}/{folder_name}/` |
-| Sub-project of parent that stays active | `PARA/4 Archive/Archive {YYYY}/{parent_name}/{sub_folder_name}/` |
-| All sub-projects done → entire umbrella | `PARA/4 Archive/Archive {YYYY}/{parent_name}/` (move whole folder) |
-| User picks Resources for a REVIEW item | `PARA/3 Resources/{folder_name}/` |
+| Scenario                                                  | Target Path                                                        |
+| --------------------------------------------------------- | ------------------------------------------------------------------ |
+| Standalone project (top-level folder in PARA/1 Projects/) | `PARA/4 Archive/Archive {YYYY}/{folder_name}/`                     |
+| Sub-project of parent that stays active                   | `PARA/4 Archive/Archive {YYYY}/{parent_name}/{sub_folder_name}/`   |
+| All sub-projects done → entire umbrella                   | `PARA/4 Archive/Archive {YYYY}/{parent_name}/` (move whole folder) |
+| User picks Resources for a REVIEW item                    | `PARA/3 Resources/{folder_name}/`                                  |
 
 ### Year determination
 
@@ -178,6 +183,7 @@ Create `PARA/4 Archive/Archive {YYYY}/` if it does not exist. Create parent sub-
 ### Conflict handling
 
 If the target path already exists in the archive (e.g., a project was partially archived before):
+
 - Ask user: "**{folder_name}** already exists in Archive {YYYY}/. Merge contents into existing folder, or rename to {folder_name} (2)?"
 - Wait for user response before proceeding
 
@@ -242,14 +248,15 @@ For REVIEW items the user confirms, ask per-item: archive, move to Resources, or
 ### CLAUDE.md Projects table
 
 After all confirmed moves complete:
+
 1. Read the current CLAUDE.md Projects table
 2. Remove rows for archived projects
 3. Do not add archive notes to the table — keep it clean for active projects only
 4. Write the updated table (CLAUDE.md is an exception to the "no modification without confirmation" rule for this operation, since the user already confirmed the archive)
 
-### TASKS.md
+### If tasks skill is available
 
-1. Read TASKS.md
+1. Read the tasks
 2. Find tasks referencing archived project names or Jira keys
 3. Present each to the user: "These tasks reference archived projects:"
    - Mark as done?
@@ -268,7 +275,7 @@ Archived 3 projects:
   Data Management/Data copy        → Archive 2026/Data Management/Data copy/
 
 CLAUDE.md: removed 2 entries
-TASKS.md: 1 task flagged for review
+Tasks: 1 task flagged for review
 ```
 
 ## Section 9: Project Table Sync
@@ -283,11 +290,11 @@ List all folders in `PARA/1 Projects/` (post-archiving). For each, extract: fold
 
 ### Step 2: Compare against CLAUDE.md
 
-| Situation | Action |
-|-----------|--------|
-| Folder exists in PARA/1 but not in Projects table | Add row: **Name** from folder name (bold), **What** from frontmatter description or Jira summary |
-| Row exists in table but folder is gone from PARA/1 | Remove row (it was archived or manually deleted) |
-| Both exist | Update What column with current Jira status if available (e.g., append "In Progress" or "In Review") |
+| Situation                                          | Action                                                                                               |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Folder exists in PARA/1 but not in Projects table  | Add row: **Name** from folder name (bold), **What** from frontmatter description or Jira summary     |
+| Row exists in table but folder is gone from PARA/1 | Remove row (it was archived or manually deleted)                                                     |
+| Both exist                                         | Update What column with current Jira status if available (e.g., append "In Progress" or "In Review") |
 
 ### Step 3: Present diff
 
@@ -324,7 +331,7 @@ Wait for user confirmation before writing to CLAUDE.md.
 2. **Never delete files** — archive means move, not delete
 3. **Never modify Work Diary files** — they are read-only
 4. **Never create PARA/1, 2, or 3 directories** — only create Archive year folders and sub-folders within them
-5. **Never auto-remove tasks** — always present TASKS.md changes for user approval
+5. **Never auto-remove tasks** — always present tasks changes for user approval
 6. **Log all moves** — print a summary after execution
 
 ### Behavioral

@@ -30,6 +30,7 @@ Always shows a plan and asks for confirmation. No files are moved without explic
 Use project-lifecycle skill Section 2 (Inventory Rules).
 
 Scan `PARA/1 Projects/` and build a registry of all projects, including:
+
 - Folder names, Jira keys, parent/child relationships
 - Frontmatter status and dates from main .md files
 - Umbrella detection (has sub-project folders)
@@ -51,6 +52,7 @@ For projects with Jira keys, query Atlassian MCP for current status, resolution,
 Use project-lifecycle skill Section 5 (Classification Rules).
 
 Classify each project as ARCHIVE, REVIEW, or ACTIVE based on:
+
 - Jira terminal statuses (Done/Closed/Merged → always ARCHIVE)
 - Diary mention recency
 - Frontmatter status
@@ -70,6 +72,7 @@ Display the classification tables grouped by ARCHIVE, REVIEW, and ACTIVE. Ask th
 Use project-lifecycle skill Section 6 (Archive Placement) for target paths.
 
 For each confirmed item:
+
 1. Determine target path per placement rules
 2. Create archive year folder and parent sub-folders if needed
 3. Move the project folder to the target path
@@ -80,7 +83,7 @@ For each confirmed item:
 Use project-lifecycle skill Section 8 (Post-Move Updates).
 
 1. Update CLAUDE.md Projects table — remove archived entries
-2. Check TASKS.md for references to archived projects — present for user triage
+2. Check task management skill, if present, for references to archived projects — present for user triage
 3. Print the move log summary
 
 ### Step 8: Project Table Sync
@@ -88,6 +91,7 @@ Use project-lifecycle skill Section 8 (Post-Move Updates).
 Use project-lifecycle skill Section 9 (Project Table Sync).
 
 Reconcile CLAUDE.md Projects table against current PARA/1 Projects/ state:
+
 - Add rows for new projects not in the table
 - Remove rows for projects no longer in PARA/1
 - Update status annotations from Jira if available

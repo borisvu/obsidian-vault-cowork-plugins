@@ -23,20 +23,20 @@ Two modes:
 
 ### 1. Load Current State
 
-Read `TASKS.md` and `CLAUDE.md`. If they don't exist, suggest `/para-flow:start` first.
+Read `CLAUDE.md`. If they don't exist, suggest `/para-flow:start` first.
 
 ### 2. Sync from Jira
 
 If Atlassian MCP is available, fetch issues assigned to user (open/in-progress).
 
-Compare against TASKS.md:
+Compare against task manager skill:
 
-| Jira issue                                     | TASKS.md match?       | Action             |
-| ---------------------------------------------- | --------------------- | ------------------ |
-| Found, not in TASKS.md                         | No match              | Offer to add       |
-| Found, already in TASKS.md                     | Match by key or title | Skip               |
-| In TASKS.md with Jira key, not in Jira results | Possibly completed    | Offer to mark done |
-| Completed in Jira                              | In Active section     | Offer to mark done |
+| Jira issue                                  | tasks match?          | Action             |
+| ------------------------------------------- | --------------------- | ------------------ |
+| Found, not in tasks.                        | No match              | Offer to add       |
+| Found, already in tasks.                    | Match by key or title | Skip               |
+| In tasks with Jira key, not in Jira results | Possibly completed    | Offer to mark done |
+| Completed in Jira                           | In Active section     | Offer to mark done |
 
 Present diff and let user decide.
 
@@ -56,7 +56,7 @@ When searching for existing notes, use glob patterns like `PARA/1 Projects/*/{KE
 
 ### 4. Triage Stale Items
 
-Review Active tasks in TASKS.md and flag:
+If task management is available, review Active tasks and flag:
 
 - Tasks with due dates in the past
 - Tasks in Active for 30+ days

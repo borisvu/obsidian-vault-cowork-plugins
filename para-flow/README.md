@@ -4,7 +4,6 @@ A Second Brain productivity plugin for [Cowork](https://claude.com/product/cowor
 
 ## What It Does
 
-- **Task management** — `TASKS.md` for the active backlog, readable and writable by Claude
 - **Workplace memory** — Two-tier system: `CLAUDE.md` hot cache + deep storage mapped to PARA folders
 - **Daily reports** — Generates daily standup reports from Work Diary entries
 - **Jira integration** — Resolves Jira ticket links, creates vault entries for referenced tickets
@@ -26,16 +25,16 @@ A Second Brain productivity plugin for [Cowork](https://claude.com/product/cowor
 
 ## Commands
 
-| Command                         | What it does                                                           |
-| ------------------------------- | ---------------------------------------------------------------------- |
-| `/start`                        | Initialize CLAUDE.md, TASKS.md, dashboard; bootstrap memory from vault |
-| `/update`                       | Triage stale tasks, sync Jira, check memory gaps                       |
-| `/standup`                      | Generate laconic standup report from Work Diary entries                 |
-| `/standup --full`               | Generate comprehensive daily report with all sections                  |
-| `/standup since YYYY-MM-DD`     | Standup covering multiple days since given date                        |
-| `/archive`                        | Scan projects for staleness, recommend and execute archiving           |
-| `/archive --since N`              | Override staleness threshold (default: 30 days)                        |
-| `/triage`                         | Triage inbox: classify, detect conflicts, enhance, and place files     |
+| Command                     | What it does                                                       |
+| --------------------------- | ------------------------------------------------------------------ |
+| `/start`                    | Initialize CLAUDE.md; bootstrap memory from vault                  |
+| `/update`                   | Triage stale tasks, sync Jira, check memory gaps                   |
+| `/standup`                  | Generate laconic standup report from Work Diary entries            |
+| `/standup --full`           | Generate comprehensive daily report with all sections              |
+| `/standup since YYYY-MM-DD` | Standup covering multiple days since given date                    |
+| `/archive`                  | Scan projects for staleness, recommend and execute archiving       |
+| `/archive --since N`        | Override staleness threshold (default: 30 days)                    |
+| `/triage`                   | Triage inbox: classify, detect conflicts, enhance, and place files |
 
 ## Installation
 

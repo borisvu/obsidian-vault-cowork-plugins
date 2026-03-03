@@ -185,7 +185,7 @@ When user says "remember this" or provides new context:
 
 ### Obsidian Markdown Requirements
 
-Every created `.md` file (except CLAUDE.md and TASKS.md) MUST include YAML frontmatter:
+Every created `.md` file (except CLAUDE.md) MUST include YAML frontmatter:
 
 ```yaml
 ---
@@ -233,4 +233,4 @@ last_updated: { YYYY-MM-DD }
 - Follow existing vault filename conventions (Title Case with spaces)
 - Always capture nicknames and alternate names
 - Check if a file already exists before creating a new one
-- Never modify existing vault files without user confirmation (except CLAUDE.md and TASKS.md)
+- Never modify existing vault files without user confirmation (except CLAUDE.md)

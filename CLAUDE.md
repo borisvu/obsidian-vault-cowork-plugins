@@ -33,7 +33,6 @@ work-notes-plugins/
 │   │   └── triage.md                    # /para-flow:triage — triage inbox files
 │   └── skills/
 │       ├── memory-management/SKILL.md   # Two-tier memory: CLAUDE.md + PARA folders
-│       ├── task-management/SKILL.md     # TASKS.md management
 │       ├── daily-report/SKILL.md        # Daily report generation from Work Diary (10 sections)
 │       ├── project-lifecycle/SKILL.md   # Project staleness, classification, archiving (10 sections)
 │       ├── inbox-triage/SKILL.md        # Inbox classification, conflicts, enhancement (8 sections)
@@ -65,7 +64,7 @@ The plugin maps its concepts to an existing Obsidian vault's PARA structure inst
 | Terms / glossary          | `PARA/3 Resources/Terms/{Term}.md` (individual files)    |
 | Company context           | `PARA/3 Resources/Company/`                              |
 | Archived projects         | `PARA/4 Archive/{YYYY}/`                                 |
-| Unsorted items            | `PARA/0 Inbox/` (triaged by `/triage` command)            |
+| Unsorted items            | `PARA/0 Inbox/` (triaged by `/triage` command)           |
 | Daily notes               | `Work Diary/YYYY/MM/YYYY-MM-DD.md`                       |
 | Weekly notes              | `Work Diary/gggg/MM/gggg-[W]ww.md`                       |
 
@@ -78,7 +77,7 @@ Lookup flow: CLAUDE.md -> PARA folders (search recursively) -> Jira API -> ask u
 
 ### Five Commands
 
-1. **`/para-flow:start`** — Verifies vault structure, creates CLAUDE.md/TASKS.md/dashboard.html if missing, bootstraps memory by scanning PARA content
+1. **`/para-flow:start`** — Verifies vault structure, creates CLAUDE.md if missing, bootstraps memory by scanning PARA content
 2. **`/para-flow:update`** — Syncs Jira issues, triages stale tasks, resolves unlinked Jira references, fills memory gaps. `--comprehensive` mode adds deep vault scanning and Inbox triage
 3. **`/para-flow:standup`** — Reads Work Diary entries, resolves Obsidian links and Jira tickets, cleans tags, outputs laconic standup report. Supports `--full` for comprehensive reports and `since YYYY-MM-DD` for date ranges
 4. **`/para-flow:archive`** — Scans PARA/1 Projects for staleness using diary mentions, Jira status, and frontmatter. Classifies as ARCHIVE/REVIEW/ACTIVE. Moves confirmed projects to `PARA/4 Archive/Archive {YYYY}/` and reconciles CLAUDE.md Projects table. Supports `--since N` for threshold override
@@ -88,7 +87,7 @@ Lookup flow: CLAUDE.md -> PARA folders (search recursively) -> Jira API -> ask u
 
 ### Obsidian Markdown Rules (enforced across all skills/commands)
 
-- All created `.md` files (except CLAUDE.md and TASKS.md) **must** have YAML frontmatter with at minimum: `aliases`, `tags`, `creation_date`
+- All created `.md` files (except CLAUDE.md) **must** have YAML frontmatter with at minimum: `aliases`, `tags`, `creation_date`
 - Internal cross-references use `[[wikilinks]]`, not markdown links
 - External links (Jira URLs, websites) use standard markdown links
 - Filenames use **Title Case with spaces** (e.g., `John Smith.md`), not kebab-case
@@ -123,7 +122,7 @@ Sunday through Thursday (Israel). Friday and Saturday are non-work days. This af
 ### Safety Rules
 
 - NEVER create PARA directories — they already exist in the vault
-- NEVER modify existing vault files without user confirmation (CLAUDE.md and TASKS.md are exceptions)
+- NEVER modify existing vault files without user confirmation (CLAUDE.md is an exception)
 - NEVER auto-add tasks or memories without user confirmation
 - Daily report is read-only on Work Diary files
 - Jira note creation always requires user confirmation

@@ -24,12 +24,9 @@ If these don't exist, STOP and tell the user: "This doesn't look like your Work 
 Check the vault root for:
 
 - `CLAUDE.md` — working memory hot cache
-- `TASKS.md` — task list
 - `dashboard.html` — visual dashboard
 
 ### 3. Create What's Missing
-
-**If `TASKS.md` doesn't exist:** Create it with the standard template (see task-management skill). Place in vault root.
 
 **If `dashboard.html` doesn't exist:** Copy from `${CLAUDE_PLUGIN_ROOT}/skills/dashboard.html` to vault root.
 
@@ -63,8 +60,6 @@ Only if `CLAUDE.md` doesn't exist.
 3. **Projects:** Recursively read from `PARA/1 Projects/` — projects may be subdirectories containing multiple notes
 4. **Terms:** Read individual files from `PARA/3 Resources/Terms/` (each file is one term)
 
-**Then scan TASKS.md** (if it has content) for unresolved shorthand — names, acronyms, project references.
-
 **Ask the user** about anything that can't be decoded from existing vault content:
 
 ```
@@ -82,7 +77,7 @@ If Atlassian MCP is available, offer:
 Want me to scan your Jira assigned issues to populate tasks and learn project context?
 ```
 
-If yes, fetch open issues assigned to user, add to TASKS.md, and create project entries.
+If yes, and task manager available, fetch open issues assigned to user, add to tasks, and create project entries.
 
 ### 8. Write CLAUDE.md
 
@@ -92,7 +87,6 @@ From everything gathered, create CLAUDE.md using the template in the memory-mana
 
 ```
 Para Flow ready:
-- Tasks: TASKS.md (X items)
 - Memory: CLAUDE.md populated (X people, X terms, X projects)
 - Deep memory: mapped to PARA/2 Areas/, PARA/1 Projects/, PARA/3 Resources/
 - Dashboard: dashboard.html
